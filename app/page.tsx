@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import Link from "next/link";
 
 const animatedContainer: Variants = {
   hidden: () => ({
@@ -19,12 +20,6 @@ const animatedContainer: Variants = {
 export default function Home() {
   return (
     <div className="h-screen w-full relative flex flex-col justify-center items-center">
-      <div
-        className="absolute inset-0 z-[-1]"
-        style={{
-          background: "radial-gradient(125% 125% at 50% 10%, #000000 40%, #010133 100%)",
-        }}
-      />
       <motion.h1
        className="text-green-400 text-6xl z-10 font-display"
        variants={animatedContainer}
@@ -46,23 +41,22 @@ export default function Home() {
       <motion.button
         type="button"
         className="relative px-6 py-3 mt-3 font-sans text-white cursor-pointer border border-gray-700 rounded-lg overflow-hidden"
-        variants={animatedContainer} // 👈 your fade+blur animation
+        variants={animatedContainer}
         initial="hidden"
         animate="visible"
         whileHover="hover"
         custom={0.4}
       >
-        {/* Hover background */}
         <motion.span
           className="absolute inset-0 bg-green-500/50 rounded-lg z-0"
           variants={{
-            hidden: { x: "100%", y: "100%" }, // offscreen
-            hover: { x: "0%", y: "0%" },      // slide in when button hovered
+            hidden: { x: "100%", y: "100%" },
+            hover: { x: "0%", y: "0%" },
           }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
         />
         
-        <span className="relative z-10">Let&apos;s Code</span>
+        <Link href="/" className="relative z-10">Let&apos;s Code</Link>
       </motion.button>
     </div>
   );
