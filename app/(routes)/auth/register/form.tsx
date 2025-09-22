@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
 type FormDetails = {
     email: string,
@@ -14,6 +15,8 @@ type Errors = {
 };
 
 const RegisterForm = () => {
+  const router = useRouter();
+
   const initialErrors = {
     errorElement: "",
     errorMessage: "",
@@ -34,7 +37,7 @@ const RegisterForm = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if(!formDetails.email) {
         setErrors({
@@ -49,10 +52,26 @@ const RegisterForm = () => {
         });
         return;
     } else {
-        setErrors(initialErrors);
-        setFormDetails(initialFormDetails);
-        alert("Form submitted");
-        console.log(formDetails);
+        try {
+            setErrors(initialErrors);
+            setFormDetails(initialFormDetails);
+
+            const res = await fetch('/api/auth/register', {
+                method: "POST",
+                body: JSON.stringify(formDetails),
+            });
+
+            if(res) {
+                const data = await res.json();
+                if(data.status === "Success") {
+                    router.push('/');
+                } else if(data.status === "Exists") {
+                    router.push('/auth/login');
+                }
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
     }
   };
 
