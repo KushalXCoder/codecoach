@@ -2,6 +2,7 @@ import connectDB from "@/lib/connectDb";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -27,7 +28,17 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ message: "Invalid Credentials" }, { status: 401 });
         }
 
-        return NextResponse.json({ message: "Login Successful", user }, { status: 200 });
+        const res = NextResponse.json({ message: "Login Successful", user }, { status: 200 });
+
+        const token = jwt.sign({ data: user }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
+        
+        res.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60,
+        });
+
+        return res;
         
     } catch (error) {
         return NextResponse.json({ message: "Internal Server Error", error }, { status: 500 });
