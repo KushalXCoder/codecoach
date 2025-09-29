@@ -2,6 +2,9 @@
 
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
+import userStore from "@/store/user.store";
+import { useEffect, useState } from "react";
+import Toast from "@/components/toast";
 
 const animatedContainer: Variants = {
   hidden: () => ({
@@ -18,6 +21,24 @@ const animatedContainer: Variants = {
 }
 
 export default function Home() {
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const justRegistered = userStore((state) => state.justRegistered);
+  const { setJustRegistered } = userStore();
+
+  useEffect(() => {
+    if(justRegistered) {
+      setShowToast(true);
+
+      const timer = setTimeout(() => {
+        setJustRegistered(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowToast(false);
+    }
+  }, [justRegistered, setJustRegistered]);
+
   return (
     <div className="h-screen w-full relative flex flex-col justify-center items-center">
       <motion.h1
@@ -58,6 +79,7 @@ export default function Home() {
         
         <Link href="/" className="relative z-10">Let&apos;s Code</Link>
       </motion.button>
+      {showToast && <Toast text="Verification successful, welcome to CodeCoach!" />}
     </div>
   );
 }
