@@ -42,17 +42,22 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setLoading(true);
+
     if(!formDetails.email) {
         setErrors({
             errorElement: "email",
             errorMessage: "Email is required",
         });
+        setLoading(false);
         return;
     } else if(!formDetails.password) {
         setErrors({
             errorElement: "password",
             errorMessage: "Password is required",
         });
+        setLoading(false);
         return;
     } else {
         try {
@@ -74,6 +79,7 @@ const RegisterForm = () => {
             }
         } catch (error) {
             console.error("Error submitting form:", error);
+            setLoading(false);
         }
     }
   };
