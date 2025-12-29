@@ -51,9 +51,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(72.3% 0.219 149.579); /* text-green-500 */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(79.2% 0.209 151.711); /* text-green-400 */
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -119,4 +119,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bg-gradient {
+  background: radial-gradient(125% 125% at 50% 10%, #000000 40%, #010133 100%);
 }

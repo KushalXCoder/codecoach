@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import checkToken from "./lib/checkToken";
 
-export const middleware = async (req: NextRequest) => {
+export const proxy = async (req: NextRequest) => {
     const cookieStore = await cookies();
     const cookie = cookieStore.get("token");
 
@@ -24,5 +24,5 @@ export const middleware = async (req: NextRequest) => {
 }
 
 export const config = {
-    matcher: ["/", "/dashboard/:path*"],
+    matcher: ["/dashboard/:path*"],
 }

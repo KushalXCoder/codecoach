@@ -93,7 +93,7 @@ const LoginForm = () => {
                 "Submit"
             )}
         </button>
-        <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/register" className='text-green-500 hover:underline transition-all'>Register</Link></h1>
+        <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/register" className='text-primary hover:underline transition-all'>Register</Link></h1>
     </form>
   )
 }

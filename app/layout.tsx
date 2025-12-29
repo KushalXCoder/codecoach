@@ -26,14 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSans.variable} ${bitcountGridDouble.variable} antialiased`}
+        className={`${dmSans.variable} ${bitcountGridDouble.variable} bg-gradient antialiased`}
       >
-        <div
-          className="absolute inset-0 -z-10 h-full w-full"
-          style={{
-            background: "radial-gradient(125% 125% at 50% 10%, #000000 40%, #010133 100%)",
-          }}
-        />
         {children}
       </body>
     </html>

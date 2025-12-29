@@ -9,11 +9,11 @@ export default function DashboardLayout({
 } : { children : React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient());
     return (
-        <div className=''>
-            <Navbar />
-            <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+            <main className="min-h-screen container max-w-7xl mx-auto px-28">
+                <Navbar />
                 {children}
-            </QueryClientProvider>
-        </div>
+            </main>
+        </QueryClientProvider>
     )
 }

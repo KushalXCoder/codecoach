@@ -103,7 +103,7 @@ const RegisterForm = () => {
                 "Submit"
             )}
         </button>
-        <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/login" className='text-green-500 hover:underline transition-all'>Login</Link></h1>
+        <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/login" className='text-primary hover:underline transition-all'>Login</Link></h1>
         <div className='flex w-full justify-center items-center mt-3'>
             <hr className='border-gray-500 w-20'/>
             <span className='mx-2 text-gray-500 font-sans'>OR CONTINUE WITH</span>

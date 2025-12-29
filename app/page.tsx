@@ -40,9 +40,9 @@ export default function Home() {
   }, [justRegistered, setJustRegistered]);
 
   return (
-    <div className="h-screen w-full relative flex flex-col justify-center items-center">
+    <div className="h-screen w-full flex flex-col justify-center items-center bg-gradient">
       <motion.h1
-       className="text-green-400 text-6xl z-10 font-display"
+       className="text-secondary text-6xl z-10 font-display"
        variants={animatedContainer}
        initial="hidden"
        animate="visible"
@@ -57,7 +57,8 @@ export default function Home() {
        animate="visible"
        custom={0.2}
       >
-        A better way to solve <span className="font-display text-white">codeforces</span> problems
+        {/* A better way to solve <span className="font-display text-white">codeforces</span> problems */}
+        Daily practice, customized for your skills and goals.
       </motion.p>
       <motion.button
         type="button"
@@ -77,7 +78,7 @@ export default function Home() {
           transition={{ duration: 0.4, ease: "easeInOut" }}
         />
         
-        <Link href="/" className="relative z-10">Let&apos;s Code</Link>
+        <Link href="/problems" className="relative z-10">Let&apos;s Code</Link>
       </motion.button>
       {showToast && <Toast text="Verification successful, welcome to CodeCoach!" />}
     </div>

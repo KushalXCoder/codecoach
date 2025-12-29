@@ -8,7 +8,7 @@ const LoginPage = () => {
         <div className="text-white flex flex-col">
             {/* Log In Header */}
             <h1 className='font-sans text-3xl'>
-                Log In to <span className='font-display text-green-500 text-4xl'>CodeCoach</span>
+                Log In to <span className='font-display text-primary text-4xl'>CodeCoach</span>
             </h1>
             <p className='font-sans text-gray-500 text-xl'>Enter your details to get started</p>
 

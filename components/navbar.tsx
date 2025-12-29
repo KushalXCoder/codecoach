@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import React from 'react';
 import { usePathname } from 'next/navigation';
+import ProfileSheet from './profile/profile-sheet';
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -11,21 +11,25 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Problems', href: '/dashboard/problems' },
     { name: 'Contests', href: '/dashboard/contests' },
-    { name: 'Profile', href: '/dashboard/profile' },
+    { name: 'Profile', href: '/' },
   ];
 
   return (
-    <nav className='w-full flex justify-between items-center px-20 py-5'>
-        <h1 className='font-display text-3xl text-green-500'>CodeCoach</h1>
+    <nav className='w-full flex justify-between items-center py-5 sticky top-0 z-10'>
+        <h1 className='font-display text-3xl text-primary'>CodeCoach</h1>
         <ul className='flex items-center gap-8 font-sans text-white'>
             {navLinks.map((link,index) => (
+              link.name === 'Profile' ? (
+                <ProfileSheet />
+              ) : (
                 <Link
                     key={index}
                     href={link.href}
-                    className={`${pathname.split('/')[2] === link.href.split('/')[1] ? `text-green-500` : ``}`}
+                    className={`${pathname.split('/')[2] === link.href.split('/')[1] ? `text-primary` : ``}`}
                 >
                     {link.name}
                 </Link>
+              )
             ))}
         </ul>
     </nav>

@@ -8,7 +8,7 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({message: "Codeforces ID is required"}, {status: 400});
         }
 
-        const res = await fetch(`${process.env.API_URI}/user.info?handles=${codeforcesId}`);
+        const res = await fetch(`https://codeforces.com/api/user.info?handles=${codeforcesId}`);
 
         if(res.ok) {
             const data = await res.json();

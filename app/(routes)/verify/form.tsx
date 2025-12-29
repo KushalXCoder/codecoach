@@ -22,44 +22,56 @@ const VerifyForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch(`/api/verify`, {
+    try {
+      const res = await fetch(`/api/verify`, {
         method: "POST",
         body: JSON.stringify({ codeforcesId }),
         cache: "no-store",
-    });
+      });
 
-    if(res.ok) {
-      const resData = await res.json();
-      
-      const valToCheck = resData.data.result[0].organization;
-      if(valToCheck === "CodeCoach") {
-          // To show toast on the homepage
-          setJustRegistered(true);
-          // Redirect to homepage
-          router.push("/dashboard/problems");
-          try {
-            const res = await fetch('/api/store-id', {
-              method: "PUT",
-              body: JSON.stringify({ codeforcesId }),
-              credentials: "include",
-            });
-            if(res.ok) {
-              const data = await res.json();
-              console.log(data);
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      if(res.ok) {
+        const resData = await res.json();
+        
+        const valToCheck = resData.data.result[0].organization;
+        if(valToCheck === "CodeCoach") {
+            // To show toast on the homepage
+            setJustRegistered(true);
+            // Redirect to homepage
+            router.push("/dashboard/problems");
+            try {
+              const res = await fetch('/api/store-id', {
+                method: "PUT",
+                body: JSON.stringify({ codeforcesId }),
+                credentials: "include",
+              });
+              if(res.ok) {
+                const data = await res.json();
+                console.log(data);
+              }
+            } catch (error) {
+              console.log("Error saving id", error);
             }
-          } catch (error) {
-            console.log("Error saving id", error);
-          }
+        }
+        else {
+            setTimeout(() => {
+              setShowToast({ text: "", flag: false });
+            }, 3000);
+            setShowToast({ text: "Verification failed, please try again.", flag: true });
+            console.log("Verfication failed");
+        }
+      } else {
+        return;
       }
-      else {
-          setTimeout(() => {
-            setShowToast({ text: "", flag: false });
-          }, 3000);
-          setShowToast({ text: "Verification failed, please try again.", flag: true });
-          console.log("Verfication failed");
-      }
-    } else {
-      return;
+    } catch (error: any) {
+      console.error("Error during verification", error);
+      setShowToast({
+        text: "Something went wrong. Please try again.",
+        flag: true,
+      });
     }
   }
 
