@@ -10,12 +10,22 @@ import { useState } from 'react';
 import ProfileSetup from '@/components/profile-setup';
 
 const DashboardPage = () => {
-  const { codeforcesId, profileCompleted } = userStore();
+  const { hydrated, profileCompleted } = userStore();
   const [tabValue, setTabValue] = useState<'today' | 'past'>('today');
+
+  const { data: quote, isLoading: isQuoteLoading } = useQuery({
+      queryKey: ['quote'],
+      queryFn: getQuote,
+      refetchInterval: 24 * 60 * 60 * 1000,
+  });
+
+  if(!hydrated || isQuoteLoading) {
+    return <Skeleton className='h-10 w-full mt-5' />;
+  }
   
   return (
     <div className="flex flex-1 flex-col">
-      <DailyQuote />
+      <DailyQuote quote={quote!} />
       {profileCompleted ? (
         <div className='flex flex-1 mt-5'>
           <Tabs defaultValue='today' className='font-sans'>
