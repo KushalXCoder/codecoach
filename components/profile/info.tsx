@@ -3,10 +3,16 @@
 import userStore from "@/store/user.store";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useState } from "react";
+import { InfoChangeProps } from "@/lib/global.types";
 
-const UserInfo = () => {
-    const { codeforcesId } = userStore();
+type UserInfoProps = {
+    changes: InfoChangeProps;
+    setChanges: (changes: InfoChangeProps) => void;
+};
+
+const UserInfo = ({ changes, setChanges } : UserInfoProps) => {
+    const { dailyLimit, codeforcesId } = userStore();
+    
     return (
         <div className="flex flex-col gap-5 mt-5">
             <div className="grid gap-3">
@@ -15,7 +21,13 @@ const UserInfo = () => {
             </div>
             <div className="grid gap-3">
                 <Label htmlFor="sheet-demo-username">Daily Limit</Label>
-                <Input type="number" id="sheet-demo-username" defaultValue="5" min="1" max="10" />
+                <Input
+                    type="number"
+                    id="sheet-demo-username"
+                    defaultValue={dailyLimit}
+                    min="1" max="10"
+                    onChange={(e) => setChanges({ ...changes, dailyLimit: Number(e.target.value) })}
+                />
             </div>
         </div>
     )

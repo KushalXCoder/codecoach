@@ -67,7 +67,7 @@ const LoginForm = () => {
 
         const data = await res.json();
         console.log(data);
-        router.push('/dashboard');
+        router.push('/problems');
     } catch (error) {
         console.error("Failed login attempt", error);
         setLoading(false);

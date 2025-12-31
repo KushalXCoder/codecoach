@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sheet,
   SheetClose,
@@ -10,8 +12,19 @@ import {
 } from "@/components/ui/sheet"
 import UserInfo from "./info";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { InfoChangeProps } from "@/lib/global.types";
+import { saveData } from "@/services/user.service";
+import userStore from "@/store/user.store";
 
 const ProfileSheet = () => {
+    const { codeforcesId } = userStore();
+    const [changes, setChanges] = useState<InfoChangeProps>({
+        dailyLimit: 0,
+    });
+
+    const handleChanges = async () => {
+    }
     return (
         <Sheet>
             <SheetTrigger>Profile</SheetTrigger>
@@ -21,10 +34,10 @@ const ProfileSheet = () => {
                 <SheetDescription>
                     Click save after making the changes. Otherwise, changes wont be applied.
                 </SheetDescription>
-                <UserInfo />
+                <UserInfo changes={changes} setChanges={setChanges} />
                 </SheetHeader>
                 <SheetFooter>
-                    <Button type="submit">Save Changes</Button>
+                    <Button onClick={handleChanges}>Save Changes</Button>
                     <SheetClose>
                         <Button variant="outline" className="w-full">Cancel</Button>
                     </SheetClose>

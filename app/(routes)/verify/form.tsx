@@ -41,7 +41,7 @@ const VerifyForm = () => {
             // To show toast on the homepage
             setJustRegistered(true);
             // Redirect to homepage
-            router.push("/dashboard/problems");
+            router.push("/problems");
             try {
               const res = await fetch('/api/store-id', {
                 method: "PUT",

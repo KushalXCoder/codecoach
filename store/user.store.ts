@@ -8,6 +8,8 @@ type UserStore = {
     setEmail: (val: string) => void,
     justRegistered: boolean,
     setJustRegistered: (val: boolean) => void,
+    profileCompleted: boolean,
+    setProfileCompleted: (val: boolean) => void,
 }
 
 const userStore = create<UserStore>()(
@@ -18,6 +20,8 @@ const userStore = create<UserStore>()(
         setEmail: (val: string) => set({ email: val }),
         justRegistered: false,
         setJustRegistered: (val) => set({ justRegistered: val }),
+        profileCompleted: false,
+        setProfileCompleted: (val: boolean) => set({ profileCompleted: val }),
     }), {
         name: "user-store",
         partialize: (state) => ({

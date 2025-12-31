@@ -9,13 +9,13 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Problems', href: '/dashboard/problems' },
+    { name: 'Problems', href: '/problems' },
     { name: 'Contests', href: '/dashboard/contests' },
     { name: 'Profile', href: '/' },
   ];
 
   return (
-    <nav className='w-full flex justify-between items-center py-5 sticky top-0 z-10'>
+    <nav className='h-[10%] w-full flex justify-between items-center sticky top-0 py-5 z-10'>
         <h1 className='font-display text-3xl text-primary'>CodeCoach</h1>
         <ul className='flex items-center gap-8 font-sans text-white'>
             {navLinks.map((link,index) => (
