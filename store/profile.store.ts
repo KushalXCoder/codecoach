@@ -75,6 +75,7 @@ export const profileStore = create<ProfileStore>()(
             state?.setHydrated(true);
         },
         partialize: (state) => ({
+            codeforcesId: state.codeforcesId,
             dailyLimit: state.dailyLimit,
             rating: state.rating,
             experiencedTopics: state.experiencedTopics,

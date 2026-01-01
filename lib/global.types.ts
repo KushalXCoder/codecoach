@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 export type InfoChangeProps = {
     dailyLimit: number,
 };
@@ -19,4 +17,14 @@ export type ProfileData = {
     rating: number | null,
     experiencedTopics: string[],
     improveTopics: string[],
+};
+
+export type QuestionsData = {
+    _id: string,
+    index: string,
+    contestId: number,
+    name: string,
+    rating: number,
+    points: number,
+    tags: string[],
 };
