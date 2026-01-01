@@ -2,7 +2,7 @@
 
 import { QuestionsData, RankedData } from "@/lib/global.types";
 import { topicToCFTags } from "@/lib/topicToTags";
-import { getQuestions } from "@/services/user.service";
+import { getQuestions, saveProblems } from "@/services/user.service";
 import { problemsStore } from "@/store/problems.store";
 import { profileStore } from "@/store/profile.store";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ export const normalize = (s: string) => {
 
 export const useFilterData = () => {
     const { hydrated: problemsHydrated, lastFetched, questions, setQuestions } = problemsStore();
-    const { dailyLimit, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+    const { codeforcesId, dailyLimit, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
     const [loading, setLoading] = useState<boolean>(true);
 
     const ratingLow = rating! - 300;
@@ -119,7 +119,16 @@ export const useFilterData = () => {
 
             selected.sort(() => Math.random() - 0.5);
 
+            // Update the store
             setQuestions(selected);
+
+            // Store to database
+            const data = await saveProblems(codeforcesId, selected);
+            if(!data.success) {
+                console.error(data.message || "Failed to save filtered problems");
+                return;
+            }
+            
             setLoading(false);
         };
 

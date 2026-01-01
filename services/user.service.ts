@@ -1,4 +1,4 @@
-import { ProfileData } from "@/lib/global.types";
+import { ProfileData, RankedData } from "@/lib/global.types";
 
 type GetQuestionsProps = {
     ratingLow: number,
@@ -58,5 +58,24 @@ export const getQuestions = async ({ ratingLow, ratingHigh} : GetQuestionsProps)
     } catch (error: any) {
         console.error(error.message || "Failed to fetch questions");
         return { success: false, message: error.message || "Failed to fetch questions" };
+    }
+}
+
+export const saveProblems = async (codeforcesId: string, problems: RankedData[]) => {
+    try {
+        const res = await fetch('/api/user/save-problems', {
+            method: "PUT",
+            body: JSON.stringify({ codeforcesId, problems }),
+        });
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Failed to save problems");
+        }
+
+        return { success: true, message: data.message || "Problems saved successfully" };
+    } catch (error: any) {
+        console.error("Could not save problems:", error);
+        return { success: false, message: error.message || "Failed to save problems" };
     }
 }
