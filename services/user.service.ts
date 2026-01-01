@@ -20,3 +20,19 @@ export const saveData = async (profileData: ProfileData, codeforcesId: string) =
         return { success: false, message: error.message || "Failed to save data" };
     }
 }
+
+export const userLogout = async () => {
+    try {
+        const res = await fetch('/api/auth/logout');
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Logout failed");
+        }
+
+        return { success: true, data };
+    } catch (error: any) {
+        console.error("Logout failed:", error);
+        return { success: false, message: error.message || "Logout failed" };
+    }
+}

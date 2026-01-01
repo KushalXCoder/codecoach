@@ -16,6 +16,7 @@ import { useState } from "react";
 import { InfoChangeProps } from "@/lib/global.types";
 import { saveData } from "@/services/user.service";
 import userStore from "@/store/user.store";
+import Logout from "../logout";
 
 const ProfileSheet = () => {
     const { codeforcesId } = userStore();
@@ -38,9 +39,7 @@ const ProfileSheet = () => {
                 </SheetHeader>
                 <SheetFooter>
                     <Button onClick={handleChanges}>Save Changes</Button>
-                    <SheetClose>
-                        <Button variant="outline" className="w-full">Cancel</Button>
-                    </SheetClose>
+                    <Logout />
                 </SheetFooter>
             </SheetContent>
         </Sheet>

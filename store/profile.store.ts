@@ -2,31 +2,50 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type ProfileStore = {
+    codeforcesId: string;
     dailyLimit: number | null;
     rating: number | null;
     experiencedTopics: string[];
     improveTopics: string[];
+    hydrated: boolean;
 
+    setCodeforcesId: (id: string) => void;
     setDailyLimit: (val: number) => void;
     setRating: (val: number) => void;
     setExperiencedTopics: (topics: string[]) => void;
     setImproveTopics: (topics: string[]) => void;
+    setHydrated: (val: boolean) => void;
 
+    reset: () => void;
+    hydrateFromServer: (data: Partial<ProfileStore>) => void;
     validateStep: (step: number) => { valid: boolean; message?: string };
 }
 
+const initialState = {
+    codeforcesId: "",
+    dailyLimit: null,
+    rating: null,
+    experiencedTopics: [],
+    improveTopics: [],
+    hydrated: false,
+};
+
 export const profileStore = create<ProfileStore>()(
     persist((set,get) => ({
-        dailyLimit: null,
-        rating: null,
-        experiencedTopics: [],
-        improveTopics: [],
+        ...initialState,
 
+        setCodeforcesId: (id) => set({ codeforcesId: id }),
         setDailyLimit: (val) => set({ dailyLimit: val }),
         setRating: (val) => set({ rating: val }),
         setExperiencedTopics: (topics) => set({ experiencedTopics: topics }),
         setImproveTopics: (topics) => set({ improveTopics: topics }),
+        setHydrated: (val) => set({ hydrated: val }),
 
+        reset: () => set({ ...initialState }),
+        hydrateFromServer: (data) => set({
+            ...data,
+            hydrated: true,
+        }),
         validateStep: (step) => {
             const s = get();
 
@@ -52,11 +71,15 @@ export const profileStore = create<ProfileStore>()(
         }
     }), {
         name: "profile-store",
+        onRehydrateStorage: () => (state) => {
+            state?.setHydrated(true);
+        },
         partialize: (state) => ({
             dailyLimit: state.dailyLimit,
             rating: state.rating,
             experiencedTopics: state.experiencedTopics,
             improveTopics: state.improveTopics,
+            hydrated: state.hydrated,
         }),
         storage: createJSONStorage(() => sessionStorage),
     }

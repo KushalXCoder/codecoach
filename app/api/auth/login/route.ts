@@ -28,7 +28,15 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ message: "Invalid Credentials" }, { status: 401 });
         }
 
-        const res = NextResponse.json({ message: "Login Successful", user }, { status: 200 });
+        const data = {
+            codeforcesId: user.codeforcesId,
+            dailyLimit: user.dailyLimit,
+            rating: user.rating,
+            improveTopics: user.improveTopics,
+            experiencedTopics: user.experiencedTopics,
+        }
+
+        const res = NextResponse.json({ message: "Login Successful", user: data }, { status: 200 });
 
         const token = jwt.sign({ data: user }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         
@@ -36,6 +44,7 @@ export const POST = async (req: NextRequest) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60,
+            path: '/',
         });
 
         return res;

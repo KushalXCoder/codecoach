@@ -4,6 +4,7 @@ import userStore from "@/store/user.store";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { InfoChangeProps } from "@/lib/global.types";
+import { profileStore } from "@/store/profile.store";
 
 type UserInfoProps = {
     changes: InfoChangeProps;
@@ -11,7 +12,7 @@ type UserInfoProps = {
 };
 
 const UserInfo = ({ changes, setChanges } : UserInfoProps) => {
-    const { dailyLimit, codeforcesId } = userStore();
+    const { codeforcesId, dailyLimit } = profileStore();
     
     return (
         <div className="flex flex-col gap-5 mt-5">
@@ -24,7 +25,7 @@ const UserInfo = ({ changes, setChanges } : UserInfoProps) => {
                 <Input
                     type="number"
                     id="sheet-demo-username"
-                    defaultValue={dailyLimit}
+                    defaultValue={dailyLimit ?? 0}
                     min="1" max="10"
                     onChange={(e) => setChanges({ ...changes, dailyLimit: Number(e.target.value) })}
                 />

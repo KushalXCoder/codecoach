@@ -4,6 +4,8 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/loader';
+import { profileStore } from '@/store/profile.store';
+import userStore from '@/store/user.store';
 
 type Errors = {
     errorElement: string,
@@ -31,6 +33,9 @@ const LoginForm = () => {
   const [errors, setErrors] = useState<Errors>(initialErrors);
   const [formDetails, setFormDetails] = useState<FormDetails>(initialFormDetails);
   const [isLoading, setLoading] = useState<boolean>(false);
+
+  const { setProfileCompleted } = userStore();
+  const { hydrateFromServer } = profileStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrors(initialErrors);
@@ -66,7 +71,10 @@ const LoginForm = () => {
         }
 
         const data = await res.json();
-        console.log(data);
+
+        hydrateFromServer(data.user);
+        setProfileCompleted(true);
+        
         router.push('/problems');
     } catch (error) {
         console.error("Failed login attempt", error);

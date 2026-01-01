@@ -18,8 +18,8 @@ type UserStore = {
 
 const userStore = create<UserStore>()(
     persist(set => ({
-        codeforcesId: '',
         email: '',
+        codeforcesId: '',
         justRegistered: false,
         profileCompleted: false,
         hydrated: false,
