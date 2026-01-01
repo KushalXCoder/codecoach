@@ -28,3 +28,8 @@ export type QuestionsData = {
     points: number,
     tags: string[],
 };
+
+export type RankedData = {
+    problem: QuestionsData,
+    score: number,
+};

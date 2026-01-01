@@ -19,13 +19,6 @@ import userStore from "@/store/user.store";
 import Logout from "../logout";
 
 const ProfileSheet = () => {
-    const { codeforcesId } = userStore();
-    const [changes, setChanges] = useState<InfoChangeProps>({
-        dailyLimit: 0,
-    });
-
-    const handleChanges = async () => {
-    }
     return (
         <Sheet>
             <SheetTrigger>Profile</SheetTrigger>
@@ -35,10 +28,10 @@ const ProfileSheet = () => {
                 <SheetDescription>
                     Click save after making the changes. Otherwise, changes wont be applied.
                 </SheetDescription>
-                <UserInfo changes={changes} setChanges={setChanges} />
+                <UserInfo />
                 </SheetHeader>
                 <SheetFooter>
-                    <Button onClick={handleChanges}>Save Changes</Button>
+                    <Button>Save Changes</Button>
                     <Logout />
                 </SheetFooter>
             </SheetContent>

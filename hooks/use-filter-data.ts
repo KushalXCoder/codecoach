@@ -1,26 +1,20 @@
 "use client";
 
-import { QuestionsData } from "@/lib/global.types";
+import { QuestionsData, RankedData } from "@/lib/global.types";
 import { topicToCFTags } from "@/lib/topicToTags";
 import { getQuestions } from "@/services/user.service";
+import { problemsStore } from "@/store/problems.store";
 import { profileStore } from "@/store/profile.store";
 import { useEffect, useState } from "react";
-
-type RankedData = {
-    problem: QuestionsData,
-    score: number,
-};
 
 export const normalize = (s: string) => {
     return s.toLowerCase().replace(/[^a-z ]/g, "").trim();
 }
 
 export const useFilterData = () => {
-    const { dailyLimit, rating, hydrated, improveTopics, experiencedTopics } = profileStore();
-    const [data, setData] = useState<RankedData[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    console.log(dailyLimit);
+    const { hydrated: problemsHydrated, lastFetched, questions, setQuestions } = problemsStore();
+    const { dailyLimit, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+    const [loading, setLoading] = useState<boolean>(true);
 
     const ratingLow = rating! - 300;
     const ratingHigh = rating! + 300;
@@ -49,22 +43,28 @@ export const useFilterData = () => {
     };
 
     useEffect(() => {
-        if(!hydrated || improveTopics.length === 0) return;
+        if(!problemsHydrated || !profileHydrated || improveTopics.length === 0) return;
+
+        const twentyFourHours = 24 * 60 * 60 * 1000;
+
+        if(questions.length > 0 && lastFetched && Date.now() - lastFetched < twentyFourHours) {
+            setLoading(false);
+            console.log("Using cached questions");
+            return;
+        }
 
         const run = async () => {
             // Stage 1: Fetch questions within the rating range
             const problems = await getQuestions({ ratingLow, ratingHigh });
         
             if(!problems.success) {
-                console.log(problems.message || "Failed to fetch questions for filtering");
+                // console.log(problems.message || "Failed to fetch questions for filtering");
                 setLoading(false);
                 return;
             }
         
-            console.log("Stage 1:", problems.data.data);
-            console.log("Improve Topics:", improveTopics);
-
-            
+            // console.log("Stage 1:", problems.data.data);
+            // console.log("Improve Topics:", improveTopics);
 
             // Stage 2: Filtering based on the topics
             const filteredByTopics = problems.data.data.filter((p: QuestionsData) => 
@@ -73,7 +73,7 @@ export const useFilterData = () => {
                 )
             );
 
-            console.log("Stage 2:", filteredByTopics);
+            // console.log("Stage 2:", filteredByTopics);
 
             // Stage 3: Score the selected questions
             const ranked: RankedData[] = filteredByTopics
@@ -83,7 +83,7 @@ export const useFilterData = () => {
             }))
             .sort((a: RankedData, b: RankedData) => b.score - a.score);
 
-            console.log("Stage 3:", ranked);
+            // console.log("Stage 3:", ranked);
 
             const delta = Math.max(100, rating! * 0.2);
 
@@ -93,7 +93,7 @@ export const useFilterData = () => {
                 above: ranked.filter((r: RankedData) => r.problem.rating > rating! + delta),
             };
 
-            console.log("Buckets:", buckets);
+            // console.log("Buckets:", buckets);
 
             const nearCount = Math.ceil(dailyLimit! * 0.5);
             const belowCount = Math.floor(dailyLimit! * 0.25);
@@ -119,11 +119,12 @@ export const useFilterData = () => {
 
             selected.sort(() => Math.random() - 0.5);
 
-            setData(selected);
+            setQuestions(selected);
             setLoading(false);
         };
+
         run();
     }, [improveTopics]);
 
-    return { data, loading };
+    return { data: questions, loading };
 };

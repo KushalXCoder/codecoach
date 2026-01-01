@@ -1,33 +1,36 @@
 "use client";
 
-import userStore from "@/store/user.store";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { InfoChangeProps } from "@/lib/global.types";
 import { profileStore } from "@/store/profile.store";
 
-type UserInfoProps = {
-    changes: InfoChangeProps;
-    setChanges: (changes: InfoChangeProps) => void;
-};
-
-const UserInfo = ({ changes, setChanges } : UserInfoProps) => {
-    const { codeforcesId, dailyLimit } = profileStore();
+const UserInfo = () => {
+    const { rating, codeforcesId, dailyLimit, setRating, setCodeforcesId, setDailyLimit } = profileStore();
     
     return (
         <div className="flex flex-col gap-5 mt-5">
             <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-name">Codeforces Id</Label>
-                <Input id="sheet-demo-name" defaultValue={codeforcesId} disabled />
+                <Label htmlFor="codeforces-id">Codeforces Id</Label>
+                <Input id="codeforces-id" defaultValue={codeforcesId} disabled />
             </div>
             <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-username">Daily Limit</Label>
+                <Label htmlFor="daily-limit">Daily Limit</Label>
                 <Input
                     type="number"
-                    id="sheet-demo-username"
+                    id="daily-limit"
                     defaultValue={dailyLimit ?? 0}
                     min="1" max="10"
-                    onChange={(e) => setChanges({ ...changes, dailyLimit: Number(e.target.value) })}
+                    onChange={(e) => setDailyLimit(Number(e.target.value))}
+                />
+            </div>
+            <div className="grid gap-3">
+                <Label htmlFor="rating">Rating</Label>
+                <Input
+                    type="number"
+                    id="rating"
+                    defaultValue={rating ?? 0}
+                    min="1" max="10"
+                    onChange={(e) => setRating(Number(e.target.value))}
                 />
             </div>
         </div>

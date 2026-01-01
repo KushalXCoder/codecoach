@@ -22,13 +22,14 @@ const DashboardPage = () => {
   const { data: quote, isLoading: isQuoteLoading } = useQuery({
       queryKey: ['quote'],
       queryFn: getQuote,
-      refetchInterval: 24 * 60 * 60 * 1000,
+      staleTime: 24 * 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
   });
 
   const { data: questions, loading: questionsLoading } = useFilterData();
   console.log("Filtered Data in Dashboard:", questions);
 
-  if(!hydrated || isQuoteLoading || questionsLoading) {
+  if(!hydrated || questionsLoading) {
     return <Loader />;
   }
   
