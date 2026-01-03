@@ -11,11 +11,13 @@ export default function DashboardLayout({
     const [queryClient] = useState(() => new QueryClient());
     return (
         <QueryClientProvider client={queryClient}>
-            <Navbar />
-            <main className="min-h-screen flex flex-col container max-w-7xl mx-auto px-28">
-                {children}
-                <Footer />
-            </main>
+            <div className="min-h-screen flex flex-col w-full">
+                <Navbar />
+                <main className="flex-1 container max-w-7xl mx-auto px-28">
+                    {children}
+                </main>
+                {/* <Footer /> */}
+            </div>
         </QueryClientProvider>
     )
 }

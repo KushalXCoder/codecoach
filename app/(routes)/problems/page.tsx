@@ -65,21 +65,26 @@ const DashboardPage = () => {
       {profileCompleted ? (
         <div className='flex flex-col flex-1 mt-10'>
           <Tabs defaultValue='today' className='font-sans'>
-            <TabsList className='bg-white/80 *:px-3'>
-              <TabsTrigger
-                value="today"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                Today
-              </TabsTrigger>
+            <div className='flex justify-between items-center'>
+              <TabsList className='bg-white/80 *:px-3'>
+                <TabsTrigger
+                  value="today"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Today
+                </TabsTrigger>
 
-              <TabsTrigger
-                value="past"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                Past
-              </TabsTrigger>
-            </TabsList>
+                <TabsTrigger
+                  value="past"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Past
+                </TabsTrigger>
+              </TabsList>
+              <Button>
+                Sync Problems
+              </Button>
+            </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>
                 {selectedQuestions && selectedQuestions.selectedProblems.map((question: QuestionsData) => (
@@ -91,11 +96,6 @@ const DashboardPage = () => {
               <PastQuestions />
             </TabsContent>
           </Tabs>
-          <div className='flex justify-between items-center'>
-            <Button>
-              Sync Problems
-            </Button>
-          </div>
         </div>
       ) : (
         <ProfileSetup />
