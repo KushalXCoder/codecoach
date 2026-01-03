@@ -1,8 +1,8 @@
 "use client";
 
-import { QuestionsData, RankedData } from "@/lib/global.types";
+import { LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/global.types";
 import { topicToCFTags } from "@/lib/topicToTags";
-import { getQuestions, saveProblems } from "@/services/user.service";
+import { getQuestions, saveProblems, userPrevQuestions } from "@/services/user.service";
 import { problemsStore } from "@/store/problems.store";
 import { profileStore } from "@/store/profile.store";
 import { useEffect, useState } from "react";
@@ -12,8 +12,9 @@ export const normalize = (s: string) => {
 }
 
 export const useFilterData = () => {
-    const { hydrated: problemsHydrated, lastFetched, questions, setQuestions } = problemsStore();
-    const { codeforcesId, dailyLimit, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+    const { hydrated: problemsHydrated, lastFetched, leveledQuestions, setLeveledQuestions } = problemsStore();
+    const { codeforcesId, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+    const [isError, setIsError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
     const ratingLow = rating! - 300;
@@ -47,7 +48,12 @@ export const useFilterData = () => {
 
         const twentyFourHours = 24 * 60 * 60 * 1000;
 
-        if(questions.length > 0 && lastFetched && Date.now() - lastFetched < twentyFourHours) {
+        const hasQuestions = 
+            leveledQuestions.low.length > 0 ||
+            leveledQuestions.mid.length > 0 ||
+            leveledQuestions.high.length > 0;
+
+        if(hasQuestions && lastFetched && Date.now() - lastFetched < twentyFourHours) {
             setLoading(false);
             console.log("Using cached questions");
             return;
@@ -56,15 +62,31 @@ export const useFilterData = () => {
         const run = async () => {
             // Stage 1: Fetch questions within the rating range
             const problems = await getQuestions({ ratingLow, ratingHigh });
-        
+            
             if(!problems.success) {
-                // console.log(problems.message || "Failed to fetch questions for filtering");
+                console.log(problems.message || "Failed to fetch questions for filtering");
+                setIsError(true);
                 setLoading(false);
                 return;
             }
-        
+            
             // console.log("Stage 1:", problems.data.data);
             // console.log("Improve Topics:", improveTopics);
+            
+            const prevQuestions = await userPrevQuestions(codeforcesId);
+            if(!prevQuestions.success) {
+                console.log(prevQuestions.message || "Failed to fetch user previous questions");
+                setIsError(true);
+                setLoading(false);
+                return;
+            }
+
+            console.log(prevQuestions);
+            console.log("Previous Questions:", prevQuestions.data);
+
+            const solvedIds = new Set(
+                prevQuestions.data.map((q: QuestionsData) => q._id),
+            );
 
             // Stage 2: Filtering based on the topics
             const filteredByTopics = problems.data.data.filter((p: QuestionsData) => 
@@ -85,49 +107,19 @@ export const useFilterData = () => {
 
             // console.log("Stage 3:", ranked);
 
-            const delta = Math.max(100, rating! * 0.2);
+            const unsolvedFitered = ranked.filter((r: RankedData) => {
+                return !solvedIds.has(r.problem._id);
+            });
 
-            const buckets = {
-                below: ranked.filter((r: RankedData) => r.problem.rating < rating! - delta),
-                near: ranked.filter((r: RankedData) => Math.abs(r.problem.rating - rating!) <= delta),
-                above: ranked.filter((r: RankedData) => r.problem.rating > rating! + delta),
+            const questions = {
+                low: unsolvedFitered.filter(p => p.problem.rating < rating!),
+                mid: unsolvedFitered.filter(p => p.problem.rating === rating!),
+                high: unsolvedFitered.filter(p => p.problem.rating > rating!),
             };
 
-            // console.log("Buckets:", buckets);
+            console.log("Bands:", questions);
 
-            const nearCount = Math.ceil(dailyLimit! * 0.5);
-            const belowCount = Math.floor(dailyLimit! * 0.25);
-            const aboveCount = dailyLimit! - nearCount - belowCount;
-
-            const take = (arr: RankedData[], n: number) => {
-                return arr.slice(0, Math.min(n, arr.length));
-            }
-
-            let selected: RankedData[] = [
-                ...take(buckets.near, nearCount),
-                ...take(buckets.below, belowCount),
-                ...take(buckets.above, aboveCount),
-            ];
-
-            if (selected.length < dailyLimit!) {
-                for (const r of ranked) {
-                    if (selected.some(s => s.problem._id === r.problem._id)) continue;
-                    selected.push(r);
-                    if (selected.length === dailyLimit!) break;
-                }
-            }
-
-            selected.sort(() => Math.random() - 0.5);
-
-            // Update the store
-            setQuestions(selected);
-
-            // Store to database
-            const data = await saveProblems(codeforcesId, selected);
-            if(!data.success) {
-                console.error(data.message || "Failed to save filtered problems");
-                return;
-            }
+            setLeveledQuestions(questions);
             
             setLoading(false);
         };
@@ -135,5 +127,5 @@ export const useFilterData = () => {
         run();
     }, [improveTopics]);
 
-    return { data: questions, loading };
+    return { leveledQuestions, loading, isError };
 };

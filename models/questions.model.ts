@@ -5,6 +5,9 @@ const QuestionsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    todaysQuestions: {
+        type: [Object],
+    },
     questions: {
         type: [Object],
     }

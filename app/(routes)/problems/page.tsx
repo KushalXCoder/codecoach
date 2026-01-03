@@ -3,34 +3,58 @@
 import { useQuery } from '@tanstack/react-query';
 import userStore from '@/store/user.store';
 import { getQuote } from '@/services/quote.service';
-import { Skeleton } from '@/components/ui/skeleton';
 import DailyQuote from '@/components/quote';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProfileSetup from '@/components/profile-setup';
 import Loader from './loader';
 import { useFilterData } from '@/hooks/use-filter-data';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import ProblemBox from '@/components/problems/problem-box';
+import { profileStore } from '@/store/profile.store';
+import { getFinalSelectedProblems } from '@/services/ai.service';
+import { QuestionsData } from '@/lib/global.types';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
-  const [tabValue, setTabValue] = useState<'today' | 'past'>('today');
+  const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
 
-  const link = "https://codeforces.com/contest";
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  const [tabValue, setTabValue] = useState<'today' | 'past'>('today');
 
   const { data: quote, isLoading: isQuoteLoading } = useQuery({
       queryKey: ['quote'],
       queryFn: getQuote,
       staleTime: 24 * 60 * 60 * 1000,
-      refetchOnWindowFocus: false,
   });
 
-  const { data: questions, loading: questionsLoading } = useFilterData();
-  console.log("Filtered Data in Dashboard:", questions);
+  const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
 
-  if(!hydrated || questionsLoading) {
+  const { data: selectedQuestions, isLoading: selectedQuestionsLoading, isError: selectedQuestionsError } = useQuery({
+    queryKey: ['questions', todayKey],
+    queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
+    enabled: !!profileHydrated,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  useEffect(() => {
+    console.log("Selected Questions:", selectedQuestions);
+  }, [selectedQuestions]);
+
+  if(!hydrated || !profileHydrated || questionsLoading || selectedQuestionsLoading) {
     return <Loader />;
+  }
+
+  if(questionsError || selectedQuestionsError) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <p className="text-red-500">Error loading questions. Please try again later.</p>
+      </div>
+    )
   }
   
   return (
@@ -61,13 +85,8 @@ const DashboardPage = () => {
             </Button>
           </div>
           <div className='flex flex-col gap-3 my-5'>
-            {questions.map((q) => (
-              <Link key={q.problem._id} href={`${link}/${q.problem.contestId}/problem/${q.problem.index}`} target="_blank">
-                <div className='border p-3 text-primary border-accent-foreground rounded-lg font-sans hover:bg-accent-foreground'>
-                  <h1 className='text-lg'>{q.problem.name}</h1>
-                  <p className='text-gray-500'>Rating: {q.problem.rating}</p>
-                </div>
-              </Link>
+            {selectedQuestions && selectedQuestions.selectedProblems.map((question: QuestionsData) => (
+              <ProblemBox question={question} />
             ))}
           </div>
         </div>

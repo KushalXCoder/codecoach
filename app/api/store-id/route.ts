@@ -1,5 +1,5 @@
 import checkToken from "@/lib/checkToken";
-import connectDB from "@/lib/connectDb";
+import connectDB from "@/lib/provider/connectDb";
 import User from "@/models/user.model";
 import { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";

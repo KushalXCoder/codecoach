@@ -1,4 +1,4 @@
-import connectDB from "@/lib/connectDb";
+import connectDB from "@/lib/provider/connectDb";
 import { QuestionsData } from "@/lib/global.types";
 import { Problems } from "@/models/problems.model";
 import { NextResponse } from "next/server";

@@ -79,3 +79,22 @@ export const saveProblems = async (codeforcesId: string, problems: RankedData[])
         return { success: false, message: error.message || "Failed to save problems" };
     }
 }
+
+export const userPrevQuestions = async (codeforcesId: string) => {
+    try {
+        const res = await fetch('/api/user/prev-questions', {
+            method: "POST",
+            body: JSON.stringify({ codeforcesId }),
+        });
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Failed to fetch previous questions");
+        }
+
+        return { success: true, message: data.message || "Previous questions fetched successfully", data: data.data };
+    } catch (error: any) {
+        console.error("Failed to fetch previous questions:", error);
+        return { success: false, message: error.message || "Failed to fetch previous questions" };
+    }
+}

@@ -1,21 +1,23 @@
-import { RankedData } from "@/lib/global.types";
+import { LeveledQuestionsData, RankedData } from "@/lib/global.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type ProblemsStore = {
     lastFetched: number | null;
     hydrated: boolean;
-    questions: RankedData[];
-    setQuestions: (questions: RankedData[]) => void;
+    leveledQuestions: LeveledQuestionsData;
+
+    setLeveledQuestions: (bands: LeveledQuestionsData) => void;
     setHydrated: (value: boolean) => void;
 };
 
 export const problemsStore = create<ProblemsStore>()(
     persist((set) => ({
         lastFetched: null,
-        questions: [],
+        leveledQuestions: { low: [], mid: [], high: [] },
         hydrated: false,
-        setQuestions: (questions: RankedData[]) => set({ questions: questions, lastFetched: Date.now() }),
+
+        setLeveledQuestions: (questions: LeveledQuestionsData) => set({ leveledQuestions: questions, lastFetched: Date.now() }),
         setHydrated: (value: boolean) => set({ hydrated: value }),
     }), {
         name: "problems-storage",

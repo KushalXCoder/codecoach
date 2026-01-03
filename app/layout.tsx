@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans, Bitcount_Grid_Double } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import QueryProvider from "@/lib/provider/query-provider";
+import { AuthProvider } from "@/lib/provider/auth-provider";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -29,8 +31,12 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${bitcountGridDouble.variable} bg-gradient antialiased`}
       >
-        {children}
-        <Toaster className="font-sans" />
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+            <Toaster className="font-sans" />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

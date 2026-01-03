@@ -33,3 +33,9 @@ export type RankedData = {
     problem: QuestionsData,
     score: number,
 };
+
+export type LeveledQuestionsData = {
+    low: RankedData[],
+    mid: RankedData[],
+    high: RankedData[],
+};
