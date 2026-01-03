@@ -1,3 +1,13 @@
+export type UserData = {
+    _id: string,
+    email: string,
+    codeforcesId: string,
+    dailyLimit: number,
+    rating: number,
+    experiencedTopics: string[],
+    improveTopics: string[],
+}
+
 export type InfoChangeProps = {
     dailyLimit: number,
 };

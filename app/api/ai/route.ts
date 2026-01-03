@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         // Connect to Redis and check for cached response
         await connectRedis();
 
-        const redisKey = `user-${codeforcesId}-${new Date().toISOString().slice(0,10)}`;
+        const redisKey = `user-${codeforcesId}`;
         const cached = await redisClient.get(redisKey);
 
         if(cached) {

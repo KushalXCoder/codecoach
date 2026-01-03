@@ -19,8 +19,6 @@ const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
   const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
 
-  const todayKey = new Date().toISOString().slice(0, 10);
-
   const [tabValue, setTabValue] = useState<'today' | 'past'>('today');
 
   const { data: quote, isLoading: isQuoteLoading } = useQuery({
@@ -32,14 +30,14 @@ const DashboardPage = () => {
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
 
   const { data: selectedQuestions, isLoading: selectedQuestionsLoading, isError: selectedQuestionsError } = useQuery({
-    queryKey: ['questions', todayKey],
+    queryKey: ['questions'],
     queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!profileHydrated,
     staleTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-  });
+  }); 
 
   useEffect(() => {
     console.log("Selected Questions:", selectedQuestions);
