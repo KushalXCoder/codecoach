@@ -10,12 +10,12 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Problems', href: '/problems' },
-    { name: 'Contests', href: '/dashboard/contests' },
+    { name: 'Contests', href: '/contests' },
     { name: 'Profile', href: '/' },
   ];
 
   return (
-    <nav className='h-[10%] w-full flex justify-between items-center sticky top-0 py-5 z-10'>
+    <nav className='h-[10%] max-w-6xl mx-auto flex justify-between items-center sticky top-0 px-12 py-5 z-10 backdrop-blur-2xl'>
         <h1 className='font-display text-3xl text-primary'>CodeCoach</h1>
         <ul className='flex items-center gap-8 font-sans text-white'>
             {navLinks.map((link,index) => (
