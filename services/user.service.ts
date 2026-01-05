@@ -92,6 +92,8 @@ export const userPrevQuestions = async (codeforcesId: string) => {
             throw new Error(data.message || "Failed to fetch previous questions");
         }
 
+        console.log("Previous questions fetched:", data.data);
+
         return { success: true, message: data.message || "Previous questions fetched successfully", data: data.data };
     } catch (error: any) {
         console.error("Failed to fetch previous questions:", error);

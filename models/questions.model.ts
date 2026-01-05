@@ -5,10 +5,6 @@ const QuestionsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    todaysDate: {
-        type: String, // use YYYY-MM-DD
-        required: true,
-    },
     todaysQuestions: {
         type: [Object],
         default: [],

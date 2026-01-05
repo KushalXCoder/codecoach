@@ -67,7 +67,10 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         user.todaysQuestions = parsed.selected;
         user.questions = [...user.questions, ...parsed.selected];
+        console.log("Storing today's questions for user:", user.questions);
         await user.save();
+
+        console.log("Successfully generated AI content for user:", parsed);
 
         return NextResponse.json({ message: "Successfully generated content", selectedProblems: parsed }, { status: 200 });
     } catch (error) {

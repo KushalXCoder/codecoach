@@ -11,7 +11,7 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Problems', href: '/problems' },
     { name: 'Contests', href: '/contests' },
-    { name: 'Profile', href: '/' },
+    { name: 'Profile', href: '/profile' },
   ];
 
   return (
@@ -20,9 +20,7 @@ const Navbar = () => {
           <h1 className='font-display text-3xl text-primary'>CodeCoach</h1>
           <ul className='flex items-center gap-8 font-sans text-white'>
               {navLinks.map((link,index) => (
-                link.name === 'Profile' ? (
-                  <ProfileSheet />
-                ) : (
+                (
                   <Link
                       key={index}
                       href={link.href}

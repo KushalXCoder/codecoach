@@ -1,6 +1,6 @@
 "use client";
 
-import { LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/global.types";
+import { FetchedQuestionsData, LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/global.types";
 import { topicToCFTags } from "@/lib/topicToTags";
 import { getQuestions, saveProblems, userPrevQuestions } from "@/services/user.service";
 import { problemsStore } from "@/store/problems.store";
@@ -46,18 +46,18 @@ export const useFilterData = () => {
     useEffect(() => {
         if(!problemsHydrated || !profileHydrated || improveTopics.length === 0) return;
 
-        const twentyFourHours = 24 * 60 * 60 * 1000;
+        // const twentyFourHours = 24 * 60 * 60 * 1000;
 
-        const hasQuestions = 
-            leveledQuestions.low.length > 0 ||
-            leveledQuestions.mid.length > 0 ||
-            leveledQuestions.high.length > 0;
+        // const hasQuestions = 
+        //     leveledQuestions.low.length > 0 ||
+        //     leveledQuestions.mid.length > 0 ||
+        //     leveledQuestions.high.length > 0;
 
-        if(hasQuestions && lastFetched && Date.now() - lastFetched < twentyFourHours) {
-            setLoading(false);
-            console.log("Using cached questions");
-            return;
-        }
+        // if(hasQuestions && lastFetched && Date.now() - lastFetched < twentyFourHours) {
+        //     setLoading(false);
+        //     console.log("Using cached questions");
+        //     return;
+        // }
 
         const run = async () => {
             // Stage 1: Fetch questions within the rating range
@@ -70,9 +70,6 @@ export const useFilterData = () => {
                 return;
             }
             
-            // console.log("Stage 1:", problems.data.data);
-            // console.log("Improve Topics:", improveTopics);
-            
             const prevQuestions = await userPrevQuestions(codeforcesId);
             if(!prevQuestions.success) {
                 console.log(prevQuestions.message || "Failed to fetch user previous questions");
@@ -81,21 +78,21 @@ export const useFilterData = () => {
                 return;
             }
 
-            console.log(prevQuestions);
-            console.log("Previous Questions:", prevQuestions.data);
-
             const solvedIds = new Set(
-                prevQuestions.data.map((q: QuestionsData) => q._id),
+                prevQuestions.data.map((q: FetchedQuestionsData) => q.id),
             );
 
+            const unsolvedQuestions = problems.data.data.filter((p: QuestionsData) =>
+                !solvedIds.has(p._id)
+            );
+            
+
             // Stage 2: Filtering based on the topics
-            const filteredByTopics = problems.data.data.filter((p: QuestionsData) => 
+            const filteredByTopics = unsolvedQuestions.filter((p: QuestionsData) => 
                 p.tags.some(tag =>
                     normalizedImproveTopics.includes(normalize(tag))
                 )
             );
-
-            // console.log("Stage 2:", filteredByTopics);
 
             // Stage 3: Score the selected questions
             const ranked: RankedData[] = filteredByTopics
@@ -104,8 +101,6 @@ export const useFilterData = () => {
                 score: score(p),
             }))
             .sort((a: RankedData, b: RankedData) => b.score - a.score);
-
-            // console.log("Stage 3:", ranked);
 
             const unsolvedFitered = ranked.filter((r: RankedData) => {
                 return !solvedIds.has(r.problem._id);
@@ -117,10 +112,7 @@ export const useFilterData = () => {
                 high: unsolvedFitered.filter(p => p.problem.rating > rating!),
             };
 
-            console.log("Bands:", questions);
-
             setLeveledQuestions(questions);
-            
             setLoading(false);
         };
 

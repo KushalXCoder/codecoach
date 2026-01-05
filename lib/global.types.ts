@@ -39,6 +39,16 @@ export type QuestionsData = {
     tags: string[],
 };
 
+export type FetchedQuestionsData = {
+    id: string,
+    index: string,
+    contestId: number,
+    name: string,
+    rating: number,
+    points?: number,
+    tags: string[],
+}
+
 export type RankedData = {
     problem: QuestionsData,
     score: number,
