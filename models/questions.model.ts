@@ -11,7 +11,11 @@ const QuestionsSchema = new mongoose.Schema({
     },
     questions: {
         type: [Object],
-    }
+    },
+    solvedQuestions: {
+        type: Number,
+        default: 0,
+    },
 });
 
 export const Questions = mongoose.models.Questions || mongoose.model("Questions", QuestionsSchema);

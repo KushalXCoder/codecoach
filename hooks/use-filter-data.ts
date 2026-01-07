@@ -48,16 +48,15 @@ export const useFilterData = () => {
 
         // const twentyFourHours = 24 * 60 * 60 * 1000;
 
-        // const hasQuestions = 
-        //     leveledQuestions.low.length > 0 ||
-        //     leveledQuestions.mid.length > 0 ||
-        //     leveledQuestions.high.length > 0;
+        const hasQuestions = 
+            leveledQuestions.low.length > 0 ||
+            leveledQuestions.mid.length > 0 ||
+            leveledQuestions.high.length > 0;
 
-        // if(hasQuestions && lastFetched && Date.now() - lastFetched < twentyFourHours) {
-        //     setLoading(false);
-        //     console.log("Using cached questions");
-        //     return;
-        // }
+        if (hasQuestions) {
+            if (loading) setLoading(false);
+            return;
+        }
 
         const run = async () => {
             // Stage 1: Fetch questions within the rating range
@@ -117,7 +116,7 @@ export const useFilterData = () => {
         };
 
         run();
-    }, [improveTopics]);
+    }, [improveTopics.join(','), profileHydrated, problemsHydrated]);
 
     return { leveledQuestions, loading, isError };
 };

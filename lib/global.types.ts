@@ -37,6 +37,7 @@ export type QuestionsData = {
     rating: number,
     points: number,
     tags: string[],
+    solved: boolean,
 };
 
 export type FetchedQuestionsData = {

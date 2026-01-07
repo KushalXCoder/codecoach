@@ -1,8 +1,6 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { profileStore } from "@/store/profile.store";
-import { ArrowLeft, ArrowUpRightFromSquareIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import {
   PieChart,
@@ -17,6 +15,12 @@ import {
 } from "recharts";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import ProfileHeader from "@/components/profile/profile-header";
+import { useQuery } from "@tanstack/react-query";
+import { userPrevQuestions } from "@/services/user.service";
+import { profileStore } from "@/store/profile.store";
+import { useEffect } from "react";
+import Loader from "@/components/loader";
 
 const difficultyData = [
   { name: "Easy", value: 120, color: "#22c55e" },
@@ -33,54 +37,54 @@ const ratingData = [
 ];
 
 const ProfilePage = () => {
-    const { codeforcesId } = profileStore();
-    const link = `https://codeforces.com/profile/${codeforcesId}`;
+    const { hydrated, codeforcesId } = profileStore();
+
+    const { data: prevQuestions, isLoading: prevQuestionsLoading, isError: prevQuestionsError } = useQuery({
+        queryKey: ['previous-questions'],
+        queryFn: async () => userPrevQuestions(codeforcesId),
+        enabled: !!codeforcesId,
+    });
+
+    useEffect(() => {
+        console.log("Previous Questions:", prevQuestions);
+    }, [prevQuestions]);
+
+    if(!hydrated) {
+        return (
+            <div className="h-screen flex justify-center items-center">
+                <Loader />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen max-w-3xl mx-auto font-sans py-7">
             <Link href="/problems" className="flex items-center gap-1 text-gray-500 mb-8">
                 <ArrowLeft className="size-4 hover:underline" />
                 Back
             </Link>
-            <div className="flex gap-5 items-center">
-                <div className="border-2 shrink-0 border-gray-500 size-20 rounded-full p-1">
-                    <Tooltip>
-                        <TooltipTrigger className=" h-full w-full bg-primary rounded-full text-white flex justify-center items-center text-3xl">
-                            <p>{codeforcesId.charAt(0)}</p>
-                        </TooltipTrigger>
-                        <TooltipContent className="font-sans">{codeforcesId}</TooltipContent>
-                    </Tooltip>
-                </div>
-                <div className="w-full flex justify-between items-center text-white">
-                    <div>
-                        <h1 className="text-xl">{codeforcesId}</h1>
-                        <p className="text-gray-500">This is your profile page.</p>
-                    </div>
-                    <Link href={link} target="_blank" className="hover:text-primary">
-                        <ArrowUpRightFromSquareIcon />
-                    </Link>
-                </div>
-            </div>
+            <ProfileHeader codeforcesId={codeforcesId} />
             <div className="mt-12 space-y-6">
             {/* Stats cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <Card className="bg-accent-foreground py-0 justify-center">
                         <CardContent className="px-5">
                             <p className="text-gray-400 text-sm">Solved</p>
-                            <h2 className="text-3xl font-semibold text-white">240</h2>
+                            <h2 className="text-3xl font-semibold text-primary">240</h2>
                         </CardContent>
                     </Card>
 
                     <Card className="bg-accent-foreground py-0">
                         <CardContent className="p-5">
                             <p className="text-gray-400 text-sm">Total Problems</p>
-                            <h2 className="text-3xl font-semibold text-white">350</h2>
+                            <h2 className="text-3xl font-semibold text-primary">{prevQuestions?.data.length}</h2>
                         </CardContent>
                     </Card>
 
                     <Card className="bg-accent-foreground py-0">
                         <CardContent className="p-5">
                             <p className="text-gray-400 text-sm">Acceptance</p>
-                            <h2 className="text-3xl font-semibold text-white">68%</h2>
+                            <h2 className="text-3xl font-semibold text-primary">68%</h2>
                         </CardContent>
                     </Card>
                 </div>
@@ -137,7 +141,7 @@ const ProfilePage = () => {
                                 <Input
                                     type="number"
                                     defaultValue={1450}
-                                    className="mt-2"
+                                    className="mt-2 text-primary"
                                 />
                             </div>
                             <div>
@@ -145,7 +149,7 @@ const ProfilePage = () => {
                                 <Input
                                     type="number"
                                     defaultValue={5}
-                                    className="mt-2"
+                                    className="mt-2 text-primary"
                                 />
                             </div>
                         </div>

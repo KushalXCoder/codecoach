@@ -100,3 +100,22 @@ export const userPrevQuestions = async (codeforcesId: string) => {
         return { success: false, message: error.message || "Failed to fetch previous questions" };
     }
 }
+
+export const getUserSubmissions = async (codeforcesId: string) => {
+    try {
+        const res = await fetch('/api/codeforces/get-user-submissions', {
+            method: "POST",
+            body: JSON.stringify({ codeforcesId }),
+        });
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Failed to fetch user submissions");
+        }
+
+        return { success: true, submissions: data.submissions };
+    } catch (error: any) {
+        console.error("Failed to fetch user submissions:", error);
+        return { success: false, message: error.message || "Failed to fetch user submissions" };
+    }
+}

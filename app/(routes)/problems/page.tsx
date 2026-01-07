@@ -9,17 +9,18 @@ import { useEffect, useState } from 'react';
 import ProfileSetup from '@/components/profile-setup';
 import Loader from './loader';
 import { useFilterData } from '@/hooks/use-filter-data';
-import { Button } from '@/components/ui/button';
 import ProblemBox from '@/components/problems/problem-box';
 import { profileStore } from '@/store/profile.store';
 import { getFinalSelectedProblems } from '@/services/ai.service';
 import { QuestionsData } from '@/lib/global.types';
 import PastQuestions from '@/components/problems/past-questions';
 import SyncButton from '@/components/problems/sync-button';
+import { problemsStore } from '@/store/problems.store';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
   const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
+  const { todaysQuestions, setTodaysQuestions } = problemsStore();
 
   const [tabValue, setTabValue] = useState<string>('today');
 
@@ -35,13 +36,21 @@ const DashboardPage = () => {
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestions;
   
   const { data: selectedQuestions, isLoading: selectedQuestionsLoading, isError: selectedQuestionsError } = useQuery({
-    queryKey: ['questions', leveledQuestions],
+    queryKey: ['questions'],
     queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    select: (data) => ({
+      ...data,
+      selectedProblems: data.selectedProblems.map((q: Omit<QuestionsData, 'solved'>) => ({
+        ...q,
+        solved: false,
+      }))
+    }),
   });
+
+  // useEffect(() => {
+  //   setTodaysQuestions(selectedQuestions?.selectedProblems);
+  // },[selectedQuestions]);
 
   useEffect(() => {
     console.log("Selected Questions:", selectedQuestions);
@@ -81,7 +90,7 @@ const DashboardPage = () => {
                   Past
                 </TabsTrigger>
               </TabsList>
-              <SyncButton tabValue={tabValue} />
+              <SyncButton codeforcesId={codeforcesId} questions={selectedQuestions?.selectedProblems} tabValue={tabValue} />
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>
