@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ProfileSheet from './profile/profile-sheet';
 
 const Navbar = () => {
   const pathname = usePathname();
