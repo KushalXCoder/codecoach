@@ -30,7 +30,7 @@ export const getPrompt = async (
     Return ONLY valid JSON in this format:
     {
       "selected": [
-        { "id": "problem_id", "contestId": contest_id, "name": "problem_name", "rating": problem_rating, "tags": [ "tag1", "tag2", etc... ] },
+        { "id": "problem_id", "index": "problem_index", "contestId": contest_id, "name": "problem_name", "rating": problem_rating, "tags": [ "tag1", "tag2", etc... ] },
       ]
     }
     or the same format in which the problems were give to you.

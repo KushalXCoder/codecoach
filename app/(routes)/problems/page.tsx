@@ -16,6 +16,7 @@ import { QuestionsData } from '@/lib/global.types';
 import PastQuestions from '@/components/problems/past-questions';
 import SyncButton from '@/components/problems/sync-button';
 import { problemsStore } from '@/store/problems.store';
+import ColorCode from '@/components/problems/color-code';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
@@ -31,7 +32,6 @@ const DashboardPage = () => {
   });
   
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
-  console.log(leveledQuestions);
   
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestions;
   
@@ -39,22 +39,11 @@ const DashboardPage = () => {
     queryKey: ['questions'],
     queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
-    select: (data) => ({
-      ...data,
-      selectedProblems: data.selectedProblems.map((q: Omit<QuestionsData, 'solved'>) => ({
-        ...q,
-        solved: false,
-      }))
-    }),
   });
 
-  // useEffect(() => {
-  //   setTodaysQuestions(selectedQuestions?.selectedProblems);
-  // },[selectedQuestions]);
-
   useEffect(() => {
-    console.log("Selected Questions:", selectedQuestions);
-  }, [selectedQuestions]);
+    setTodaysQuestions(selectedQuestions?.selectedProblems);
+  },[selectedQuestions]);
 
   if(!hydrated || !profileHydrated || questionsLoading || selectedQuestionsLoading) {
     return <Loader />;
@@ -72,7 +61,8 @@ const DashboardPage = () => {
     <div className="flex flex-1 flex-col">
       <DailyQuote quote={quote!} />
       {profileCompleted ? (
-        <div className='flex flex-col flex-1 mt-10'>
+        <div className='flex flex-col flex-1 mt-5'>
+          <ColorCode />
           <Tabs defaultValue='today' onValueChange={(value) => setTabValue(value)} className='font-sans'>
             <div className='flex justify-between items-center'>
               <TabsList className='bg-white/80 *:px-3'>
@@ -94,7 +84,7 @@ const DashboardPage = () => {
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>
-                {selectedQuestions && selectedQuestions.selectedProblems.map((question: QuestionsData) => (
+                {todaysQuestions && todaysQuestions.map((question: QuestionsData) => (
                   <ProblemBox question={question} />
                 ))}
               </div>

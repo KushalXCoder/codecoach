@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserSubmissions } from "@/services/user.service";
 import { useEffect, useState } from "react";
 import { problemsStore } from "@/store/problems.store";
+import { syncQuestions } from "@/services/questions.service";
 
 type SyncButtonProps = {
     codeforcesId: string,
@@ -15,6 +16,7 @@ type SyncButtonProps = {
 };
 
 const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => {
+    const [count, setCnt] = useState<number>(0);
     const { setTodaysQuestions } = problemsStore();
     const [userSubmissionsSet, setUserSubmissionsSet] = useState<Set<string>>(new Set());
 
@@ -29,7 +31,6 @@ const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => 
             toast('Sync is only available for today\'s problems.');
             return;
         }
-
         await refetch();
     }
 
@@ -53,14 +54,24 @@ const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => 
 
         const updatedTodaysQuestions = questions.map((question) => {
             if(userSubmissionsSet.has(question.name)) {
+                setCnt((prev) => prev + 1);
                 return { ...question, solved: true };
             }
             return question;
         });
-        
-        console.log("Updated Questions after sync:", updatedTodaysQuestions);
+
+        // Immedietly send to the store, so that UI updates
         setTodaysQuestions(updatedTodaysQuestions);
-    },[userSubmissionsSet, questions,setTodaysQuestions]);
+
+        // Fire and Forget to the backend
+        syncQuestions(codeforcesId, updatedTodaysQuestions)
+        .then(() => {
+            toast('Questions synced in the background successfully.');
+        })
+        .catch((err) => {
+            toast(err.message ||'Failed to sync questions in the background.');
+        })
+    },[userSubmissionsSet, questions, setTodaysQuestions]);
 
     return (
         <Button onClick={handleSync} disabled={!questions || questions.length === 0 || isLoading || isRefetching}>

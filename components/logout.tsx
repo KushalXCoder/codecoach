@@ -3,8 +3,13 @@ import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner";
 import { profileStore } from "@/store/profile.store";
+import { cn } from "@/lib/utils";
 
-const Logout = () => {
+type LogoutProps = {
+    className: string;
+};
+
+const Logout = ({ className } : LogoutProps) => {
     const router = useRouter();
     const { reset } = profileStore();
 
@@ -21,8 +26,8 @@ const Logout = () => {
     }
     return (
         <Button
-            variant="outline"
-            className="w-full"
+            variant="destructive"
+            className={cn("w-full cursor-pointer", className)}
             onClick={handleLogout}
         >
             Logout

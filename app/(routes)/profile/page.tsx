@@ -21,6 +21,7 @@ import { userPrevQuestions } from "@/services/user.service";
 import { profileStore } from "@/store/profile.store";
 import { useEffect } from "react";
 import Loader from "@/components/loader";
+import Logout from "@/components/logout";
 
 const difficultyData = [
   { name: "Easy", value: 120, color: "#22c55e" },
@@ -37,7 +38,7 @@ const ratingData = [
 ];
 
 const ProfilePage = () => {
-    const { hydrated, codeforcesId } = profileStore();
+    const { hydrated, rating, dailyLimit, codeforcesId } = profileStore();
 
     const { data: prevQuestions, isLoading: prevQuestionsLoading, isError: prevQuestionsError } = useQuery({
         queryKey: ['previous-questions'],
@@ -64,7 +65,10 @@ const ProfilePage = () => {
                 Back
             </Link>
             <ProfileHeader codeforcesId={codeforcesId} />
-            <div className="mt-12 space-y-6">
+            <div className="flex w-full justify-end">
+                <Logout className="mt-3 w-1/6" />
+            </div>
+            <div className="mt-5 space-y-6">
             {/* Stats cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <Card className="bg-accent-foreground py-0 justify-center">
@@ -140,7 +144,7 @@ const ProfilePage = () => {
                                 <label className="text-gray-400 text-sm">Your Rating</label>
                                 <Input
                                     type="number"
-                                    defaultValue={1450}
+                                    defaultValue={rating ?? 0}
                                     className="mt-2 text-primary"
                                 />
                             </div>
@@ -148,7 +152,7 @@ const ProfilePage = () => {
                                 <label className="text-gray-400 text-sm">Daily Problem Limit</label>
                                 <Input
                                     type="number"
-                                    defaultValue={5}
+                                    defaultValue={dailyLimit ?? 0}
                                     className="mt-2 text-primary"
                                 />
                             </div>

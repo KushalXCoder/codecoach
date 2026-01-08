@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import redisClient, { connectRedis } from "@/lib/provider/connectRedis";
 import connectDB from '@/lib/provider/connectDb';
 import { Questions } from '@/models/questions.model';
+import { FetchedQuestionsData, QuestionsData } from '@/lib/global.types';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const client = new Mistral({ apiKey: apiKey });
@@ -24,7 +25,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         const cached = await redisClient.get(redisKey);
 
         if(cached) {
-            console.log("Using cached AI response");
             return NextResponse.json({ message: "Successfully fetched cached content", selectedProblems: JSON.parse(cached) }, { status: 200 });
         }
 
@@ -48,6 +48,11 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         try {
             parsed = JSON.parse(cleaned);
+            console.log(parsed);
+            parsed.selected = parsed.selected.map((question: FetchedQuestionsData) => ({
+                ...question,
+                solved: false,
+            }));
         } catch (error) {
             console.error("Error parsing AI response:", error);
             return NextResponse.json({ message: "Failed to parse AI response", selectedProblems: content }, { status: 500 });
