@@ -1,7 +1,7 @@
 "use client";
 
-import { FetchedQuestionsData, LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/global.types";
-import { topicToCFTags } from "@/lib/topicToTags";
+import { FetchedQuestionsData, LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/types/global.types";
+import { topicToCFTags } from "@/lib/helper/topicToTags";
 import { getQuestions, saveProblems, userPrevQuestions } from "@/services/user.service";
 import { problemsStore } from "@/store/problems.store";
 import { profileStore } from "@/store/profile.store";
@@ -12,8 +12,9 @@ export const normalize = (s: string) => {
 }
 
 export const useFilterData = () => {
-    const { hydrated: problemsHydrated, lastFetched, leveledQuestions, setLeveledQuestions } = problemsStore();
+    const { hydrated: problemsHydrated, leveledQuestions, setLeveledQuestions } = problemsStore();
     const { codeforcesId, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+
     const [isError, setIsError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -63,7 +64,7 @@ export const useFilterData = () => {
             const problems = await getQuestions({ ratingLow, ratingHigh });
             
             if(!problems.success) {
-                console.log(problems.message || "Failed to fetch questions for filtering");
+                // console.log(problems.message || "Failed to fetch questions for filtering");
                 setIsError(true);
                 setLoading(false);
                 return;
@@ -71,7 +72,7 @@ export const useFilterData = () => {
             
             const prevQuestions = await userPrevQuestions(codeforcesId);
             if(!prevQuestions.success) {
-                console.log(prevQuestions.message || "Failed to fetch user previous questions");
+                // console.log(prevQuestions.message || "Failed to fetch user previous questions");
                 setIsError(true);
                 setLoading(false);
                 return;

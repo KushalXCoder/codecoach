@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { QuestionsData } from "@/lib/global.types";
+import { QuestionsData } from "@/lib/types/global.types";
 import { useQuery } from "@tanstack/react-query";
 import { getUserSubmissions } from "@/services/user.service";
 import { useEffect, useState } from "react";

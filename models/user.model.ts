@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { set } from "mongoose";
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    setupCompleted: {
+        type: Boolean,
+        default: false,
     },
     codeforcesId: {
         type: String,

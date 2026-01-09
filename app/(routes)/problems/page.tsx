@@ -12,7 +12,7 @@ import { useFilterData } from '@/hooks/use-filter-data';
 import ProblemBox from '@/components/problems/problem-box';
 import { profileStore } from '@/store/profile.store';
 import { getFinalSelectedProblems } from '@/services/ai.service';
-import { QuestionsData } from '@/lib/global.types';
+import { QuestionsData } from '@/lib/types/global.types';
 import PastQuestions from '@/components/problems/past-questions';
 import SyncButton from '@/components/problems/sync-button';
 import { problemsStore } from '@/store/problems.store';
@@ -21,9 +21,10 @@ import ColorCode from '@/components/problems/color-code';
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
   const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
-  const { todaysQuestions, setTodaysQuestions } = problemsStore();
+  const { hydrated: problemsHydrated, todaysQuestions, setTodaysQuestions } = problemsStore();
 
   const [tabValue, setTabValue] = useState<string>('today');
+  const [visibleCnt, setVisibleCnt] = useState<number>(5);
 
   const { data: quote, isLoading: isQuoteLoading } = useQuery({
       queryKey: ['quote'],
@@ -42,12 +43,15 @@ const DashboardPage = () => {
   });
 
   useEffect(() => {
-    setTodaysQuestions(selectedQuestions?.selectedProblems);
-  },[selectedQuestions]);
+    if (selectedQuestions?.selectedProblems) {
+      setTodaysQuestions(selectedQuestions.selectedProblems);
+    }
+  }, [selectedQuestions, setTodaysQuestions]);
 
-  if(!hydrated || !profileHydrated || questionsLoading || selectedQuestionsLoading) {
+  if(!hydrated || !profileHydrated || !problemsHydrated || questionsLoading || selectedQuestionsLoading) {
     return <Loader />;
   }
+
 
   if(questionsError || selectedQuestionsError) {
     return (
@@ -84,10 +88,25 @@ const DashboardPage = () => {
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>
-                {todaysQuestions && todaysQuestions.map((question: QuestionsData) => (
-                  <ProblemBox question={question} />
+                {todaysQuestions
+                  .slice(0,visibleCnt)
+                  .map((question: QuestionsData) => (
+                    <ProblemBox key={question._id} question={question} />
                 ))}
               </div>
+              {dailyLimit! > 5 ? (
+                <div className='w-full flex justify-between items-center'>
+                  <button
+                    className='text-blue-500 hover:underline cursor-pointer'
+                    onClick={() => setVisibleCnt((prev) => prev === 10 ? 5 : 10)}
+                  >
+                    {visibleCnt === 10 ? 'Show less' : 'Load More'}
+                  </button>
+                  <p className='text-gray-500'>That's not it, you got more questions down!</p>
+                </div>
+              ) : (
+                <p className='text-gray-500 text-end'>Solve this all and you are done for the day!</p>
+              )}
             </TabsContent>
             <TabsContent value='past'>
               <PastQuestions />
@@ -95,7 +114,7 @@ const DashboardPage = () => {
           </Tabs>
         </div>
       ) : (
-        <ProfileSetup />
+        <h1>Hi</h1>
       )}
     </div>
   )

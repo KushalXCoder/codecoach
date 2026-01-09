@@ -1,6 +1,6 @@
 "use client";
 
-import Footer from "@/components/footer";
+// import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";

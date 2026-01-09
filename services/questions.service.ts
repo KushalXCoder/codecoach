@@ -1,6 +1,6 @@
     // Not awaiting as I want the problems to be updated to redis in the background
 
-    import { QuestionsData } from "@/lib/global.types";
+    import { QuestionsData } from "@/lib/types/global.types";
 
     export const syncQuestions = async (
         codeforcesId: string,

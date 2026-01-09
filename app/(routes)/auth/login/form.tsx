@@ -72,7 +72,7 @@ const LoginForm = () => {
 
         const data = await res.json();
 
-        hydrateFromServer(data.user);
+        hydrateFromServer(data.tokenData.data.profileData);
         setProfileCompleted(true);
         
         router.push('/problems');
@@ -96,7 +96,7 @@ const LoginForm = () => {
         </div>
         <button disabled={isLoading} className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-2xs hover:shadow-white transition-shadow transition-colors'>
             {isLoading ? (
-                <Loader />
+                "Submitting..."
             ) : (
                 "Submit"
             )}

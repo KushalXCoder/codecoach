@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSans.variable} ${bitcountGridDouble.variable} bg-gradient antialiased`}
+        className={`${dmSans.variable} ${bitcountGridDouble.variable} bg-black antialiased`}
       >
         <QueryProvider>
           <AuthProvider>

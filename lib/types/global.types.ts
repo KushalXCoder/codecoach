@@ -60,3 +60,21 @@ export type LeveledQuestionsData = {
     mid: RankedData[],
     high: RankedData[],
 };
+
+export type JWTPayload = {
+    data: {
+        email: string;
+        setupCompleted: boolean;
+        profileData: {
+            codeforcesId: string;
+            dailyLimit: number;
+            rating: number;
+            experiencedTopics: string[];
+            improveTopics: string[];
+        }
+    }
+}
+
+export type JWTCfPayload = {
+    verified: boolean;
+}

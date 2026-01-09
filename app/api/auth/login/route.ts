@@ -28,17 +28,23 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ message: "Invalid Credentials" }, { status: 401 });
         }
 
-        const data = {
-            codeforcesId: user.codeforcesId,
-            dailyLimit: user.dailyLimit,
-            rating: user.rating,
-            improveTopics: user.improveTopics,
-            experiencedTopics: user.experiencedTopics,
+        const tokenData = {
+            data: {
+                email: user.email,
+                setupCompleted: user.setupCompleted,
+                profileData: {
+                    codeforcesId: user.codeforcesId,
+                    dailyLimit: user.dailyLimit,
+                    rating: user.rating,
+                    improveTopics: user.improveTopics,
+                    experiencedTopics: user.experiencedTopics,
+                }
+            }
         }
 
-        const res = NextResponse.json({ message: "Login Successful", user: data }, { status: 200 });
+        const res = NextResponse.json({ message: "Login Successful", tokenData }, { status: 200 });
 
-        const token = jwt.sign({ data: user }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
+        const token = jwt.sign(tokenData, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         
         res.cookies.set('token', token, {
             httpOnly: true,

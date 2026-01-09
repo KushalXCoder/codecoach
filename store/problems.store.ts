@@ -1,4 +1,4 @@
-import { LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/global.types";
+import { LeveledQuestionsData, QuestionsData, RankedData } from "@/lib/types/global.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 

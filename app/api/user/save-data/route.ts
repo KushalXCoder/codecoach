@@ -1,20 +1,32 @@
+import checkToken from "@/lib/helper/checkToken";
 import connectDB from "@/lib/provider/connectDb";
 import User from "@/models/user.model";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (req: NextRequest) => {
     try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if(!token) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
+        const decoded = await checkToken(token);
+        if(!decoded) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
         await connectDB();
 
-        const { profileData, codeforcesId } = await req.json();
-        if(!profileData || !codeforcesId) {
+        const { profileData } = await req.json();
+        if(!profileData) {
             return NextResponse.json({ message: "Invalid data" }, { status: 400 });
         }
 
-        console.log("Received data to save:", codeforcesId, profileData);
-
         const updateUser = await User.findOneAndUpdate(
-            { codeforcesId },
+            { email: decoded.data.email },
             { ...profileData },
             { new: true }
         );

@@ -19,9 +19,9 @@ const ProfileSetup = () => {
 
 
     return (
-        <div className="flex flex-col items-center font-sans mt-30">
+        <>
             {renderStep()}
-        </div>
+        </>
     )
 }
 

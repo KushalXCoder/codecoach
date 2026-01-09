@@ -62,7 +62,6 @@ const RegisterForm = () => {
     } else {
         try {
             setErrors(initialErrors);
-            setFormDetails(initialFormDetails);
 
             const res = await fetch('/api/auth/register', {
                 method: "POST",
@@ -72,7 +71,7 @@ const RegisterForm = () => {
             if(res) {
                 const data = await res.json();
                 if(data.status === "Success") {
-                    router.push('/connect');
+                    router.push('/profile-setup');
                 } else if(data.status === "Exists") {
                     router.push('/auth/login');
                 }
@@ -98,20 +97,20 @@ const RegisterForm = () => {
         </div>
         <button className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-2xs hover:shadow-white transition-shadow transition-colors'>
             {isLoading ? (
-                <Loader />
+                "Submitting..."
             ) : (
                 "Submit"
             )}
         </button>
         <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/login" className='text-primary hover:underline transition-all'>Login</Link></h1>
-        <div className='flex w-full justify-center items-center mt-3'>
+        {/* <div className='flex w-full justify-center items-center mt-3'>
             <hr className='border-gray-500 w-20'/>
             <span className='mx-2 text-gray-500 font-sans'>OR CONTINUE WITH</span>
             <hr className='border-gray-500 w-20'/>
         </div>
         <button type='button' className='mt-4'>
             <FcGoogle className='text-5xl bg-green-100 rounded-sm p-2 cursor-pointer'/> 
-        </button>
+        </button> */}
     </form>
   )
 }

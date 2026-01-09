@@ -1,4 +1,4 @@
-import checkToken from "@/lib/checkToken";
+import checkToken from "@/lib/helper/checkToken";
 import connectDB from "@/lib/provider/connectDb";
 import User from "@/models/user.model";
 import { JwtPayload } from "jsonwebtoken";

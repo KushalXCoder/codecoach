@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import Loader from "./loader";
 import ProblemBox from "./problem-box";
-import { QuestionsData } from "@/lib/global.types";
+import { QuestionsData } from "@/lib/types/global.types";
 
 const PastQuestions = () => {
     const { hydrated, codeforcesId } = profileStore();
@@ -14,10 +14,6 @@ const PastQuestions = () => {
         queryFn: () => userPrevQuestions(codeforcesId),
         enabled: hydrated && !!codeforcesId,
     });
-
-    useEffect(() => {
-        console.log("Past Questions:", pastQuestions);
-    }, [pastQuestions]);
 
     if(!hydrated || pastQuestionsLoading) {
         return <Loader />;

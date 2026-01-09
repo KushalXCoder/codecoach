@@ -1,4 +1,4 @@
-import { LeveledQuestionsData, ProfileData } from "@/lib/global.types"
+import { LeveledQuestionsData, ProfileData } from "@/lib/types/global.types"
 
 type getFinalSelectedProblemsProps = ProfileData & {
     codeforcesId?: string,

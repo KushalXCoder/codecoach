@@ -1,5 +1,6 @@
 import connectDB from "@/lib/provider/connectDb";
 import { Questions } from "@/models/questions.model";
+import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -13,7 +14,19 @@ export const POST = async (req: NextRequest) => {
 
         const user = await Questions.findOne({ codeforcesId });
         if(!user) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
+            const user = await User.findOne({ codeforcesId });
+            if(!user) {
+                return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+            }
+
+            await Questions.create({
+                codeforcesId,
+                questions: [],
+                todaysQuestions: [],
+                solvedQuestions: 0,
+            });
+
+            return NextResponse.json({ message: "User questions found", data: [] }, { status: 200 });
         }
 
         return NextResponse.json({ message: "User questions found", data: user.questions }, { status: 200 });

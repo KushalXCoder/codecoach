@@ -40,8 +40,9 @@ const VerifyForm = () => {
         if(valToCheck === "CodeCoach") {
             // To show toast on the homepage
             setJustRegistered(true);
+
             // Redirect to homepage
-            router.push("/problems");
+            router.push("/profile-setup");
             try {
               const res = await fetch('/api/store-id', {
                 method: "PUT",

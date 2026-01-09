@@ -1,4 +1,4 @@
-import checkToken from "@/lib/checkToken";
+import checkToken from "@/lib/helper/checkToken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -8,15 +8,15 @@ export const GET = async () => {
         const token = cookieStore.get("token")?.value;
 
         if(!token) {
+            console.log("No token found in cookies");
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
         const decoded = await checkToken(token);
         if(!decoded || decoded === null) {
+            console.log("Invalid or expired token");
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
-
-        console.log("Decoded Token:", decoded);
 
         return NextResponse.json({ message: "Authorized", user: decoded }, { status: 200 });
     } catch (error) {

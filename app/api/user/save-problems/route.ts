@@ -1,5 +1,5 @@
 import connectDB from "@/lib/provider/connectDb";
-import { RankedData } from "@/lib/global.types";
+import { RankedData } from "@/lib/types/global.types";
 import { Questions } from "@/models/questions.model";
 import { NextRequest, NextResponse } from "next/server";
 

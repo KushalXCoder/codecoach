@@ -1,4 +1,4 @@
-import { LeveledQuestionsData, RankedData } from "./global.types";
+import { LeveledQuestionsData, RankedData } from "../types/global.types";
 
 export const getPrompt = async (
     rating: number,

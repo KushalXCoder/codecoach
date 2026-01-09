@@ -3,8 +3,9 @@
 import { profileStore } from "@/store/profile.store";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const fetchMe = async () => {
+export const fetchMe = async () => {
     const res = await fetch("/api/me", {
         credentials: "include",
     });
@@ -19,21 +20,29 @@ const fetchMe = async () => {
 
 export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
     const { setCodeforcesId, setRating, setDailyLimit, setExperiencedTopics, setImproveTopics } = profileStore();
+    const router = useRouter();
 
-    const { data: user, isLoading } = useQuery({
+    const { data: user } = useQuery({
         queryKey: ["me"],
         queryFn: fetchMe,
+        enabled: false,
         retry: false,
     });
 
     useEffect(() => {
         if(user) {
             const data = user.user.data;
-            setCodeforcesId(data.codeforcesId);
-            setRating(data.rating);
-            setDailyLimit(data.dailyLimit);
-            setImproveTopics(data.improveTopics);
-            setExperiencedTopics(data.experiencedTopics);
+            
+            if(!data.setupCompleted) {
+                router.push('/profile-setup');
+                return;
+            }
+
+            setCodeforcesId(data.profileData.codeforcesId);
+            setRating(data.profileData.rating);
+            setDailyLimit(data.profileData.dailyLimit);
+            setImproveTopics(data.profileData.improveTopics);
+            setExperiencedTopics(data.profileData.experiencedTopics);
         }
     }, [user]);
 

@@ -6,20 +6,24 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { profileStore } from "@/store/profile.store";
 import { toast } from "sonner";
-import { saveData } from "@/services/user.service";
+import { markSetupCompleted, saveData } from "@/services/user.service";
 import userStore from "@/store/user.store";
 import { useRouter } from "next/navigation";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { fetchMe } from "@/lib/provider/auth-provider";
 
 type NavigatorProps = {
     className?: string,
 };
 
 const Navigator = ({ className } : NavigatorProps) => {
-    const { setProfileCompleted, codeforcesId } = userStore();
-    const { dailyLimit, rating, experiencedTopics, improveTopics, validateStep } = profileStore();
+    const { setProfileCompleted } = userStore();
+    const { codeforcesId, dailyLimit, rating, experiencedTopics, improveTopics, validateStep, hydrateFromServer } = profileStore();
     const { idx, setIdx } = questionStore();
-    const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
+    
+    const router = useRouter();
+    const queryClient = useQueryClient();
 
     const handleClick = async () => {
         const result = validateStep(idx);
@@ -31,10 +35,10 @@ const Navigator = ({ className } : NavigatorProps) => {
         }
         
         if(idx === 1) {
-            const profileData = { dailyLimit, rating, experiencedTopics, improveTopics};
+            const profileData = { codeforcesId, dailyLimit, rating, experiencedTopics, improveTopics };
 
             setLoading(true);
-            const data = await saveData(profileData, codeforcesId!);
+            const data = await saveData(profileData);
 
             if(!data.success) {
                 toast(data.message || "Could not save profile data");
@@ -43,9 +47,33 @@ const Navigator = ({ className } : NavigatorProps) => {
             }
 
             setLoading(false);
+            setProfileCompleted(true);
+
+            // Refresh token cookie
+            await fetch('/api/token/refresh-token', {
+                method: 'POST',
+                body: JSON.stringify({ profileData }),
+                credentials: 'include',
+            });
+
+            // To ensure that we have the latest user data, after updating the cookie
+            queryClient.removeQueries({ queryKey: ['me'] });
+
+            const freshData = await queryClient.fetchQuery({
+                queryKey: ['me'],
+                queryFn: fetchMe,
+            });
+
+            hydrateFromServer(freshData.user.data.profileData);
+
+            // Store to the DB that setup is completed
+            const res = await markSetupCompleted(codeforcesId);
+            if(!res.success) {
+                toast(res.message || "Could not mark setup as completed");
+                return;
+            }
 
             toast("Profile setup completed!");
-            setProfileCompleted(true);
             router.push('/problems');
         } else {
             setIdx(idx + 1);

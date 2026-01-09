@@ -46,10 +46,6 @@ const ProfilePage = () => {
         enabled: !!codeforcesId,
     });
 
-    useEffect(() => {
-        console.log("Previous Questions:", prevQuestions);
-    }, [prevQuestions]);
-
     if(!hydrated) {
         return (
             <div className="h-screen flex justify-center items-center">

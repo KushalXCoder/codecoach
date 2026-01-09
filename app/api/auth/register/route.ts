@@ -26,7 +26,12 @@ export const POST = async (req: NextRequest) => {
 
             const res = NextResponse.json({ message: 'User registered', status: "Success", newUser }, { status: 200 });
 
-            const token = jwt.sign({ data: newUser }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
+            const tokenData = {
+                email: newUser.email,
+                setupCompleted: false,
+            };
+
+            const token = jwt.sign({ data: tokenData }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
 
             res.cookies.set('token', token, {
                 httpOnly: true,

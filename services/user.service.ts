@@ -1,17 +1,35 @@
-import { ProfileData, RankedData } from "@/lib/global.types";
+import { ProfileData, RankedData } from "@/lib/types/global.types";
 
 type GetQuestionsProps = {
     ratingLow: number,
     ratingHigh: number,
 };
 
-export const saveData = async (profileData: ProfileData, codeforcesId: string) => {
+export const verifyCodeforcesId = async (codeforcesId: string) => {
     try {
-        console.log("Saving data for:", codeforcesId, profileData);
-        
+        const res = await fetch(`/api/verify`, {
+            method: "POST",
+            body: JSON.stringify({ codeforcesId }),
+            cache: "no-store",
+        });
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Verification failed");
+        }
+
+        return { success: true, message: data.message || "Verification successful" };
+    } catch (error: any) {
+        console.error("Verification failed:", error);
+        return { success: false, message: error.message || "Verification failed" };
+    }
+}
+
+export const saveData = async (profileData: ProfileData) => {
+    try {
         const res = await fetch('/api/user/save-data', {
             method: "PUT",
-            body: JSON.stringify({ profileData, codeforcesId }),
+            body: JSON.stringify({ profileData }),
         });
 
         const data = await res.json();
@@ -92,8 +110,6 @@ export const userPrevQuestions = async (codeforcesId: string) => {
             throw new Error(data.message || "Failed to fetch previous questions");
         }
 
-        console.log("Previous questions fetched:", data.data);
-
         return { success: true, message: data.message || "Previous questions fetched successfully", data: data.data };
     } catch (error: any) {
         console.error("Failed to fetch previous questions:", error);
@@ -117,5 +133,24 @@ export const getUserSubmissions = async (codeforcesId: string) => {
     } catch (error: any) {
         console.error("Failed to fetch user submissions:", error);
         return { success: false, message: error.message || "Failed to fetch user submissions" };
+    }
+}
+
+export const markSetupCompleted = async (codeforcesId: string) => {
+    try {
+        const res = await fetch('/api/user/completed-setup', {
+            method: "PUT",
+            body: JSON.stringify({ codeforcesId }),
+        });
+
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Failed to mark setup as completed");
+        }
+
+        return { success: true, message: data.message || "Setup marked as completed" };
+    } catch (error) {
+        console.error("Failed to mark setup as completed:", error);
+        return { success: false, message: "Failed to mark setup as completed" };
     }
 }

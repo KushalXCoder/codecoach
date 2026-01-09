@@ -1,4 +1,4 @@
-import { QuestionsData, RankedData } from "@/lib/global.types"
+import { QuestionsData, RankedData } from "@/lib/types/global.types"
 import { ArrowUpRightFromSquare, CircleCheck } from "lucide-react";
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";

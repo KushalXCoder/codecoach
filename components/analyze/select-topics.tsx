@@ -1,10 +1,9 @@
 "use client";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AnalyzeData, SelectTopicsProps } from "@/lib/global.types";
+import { AnalyzeData, SelectTopicsProps } from "@/lib/types/global.types";
 import { profileStore } from "@/store/profile.store";
 import { X } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 
 const SelectTopics = ({ type } : SelectTopicsProps) => {
@@ -67,7 +66,7 @@ const SelectTopics = ({ type } : SelectTopicsProps) => {
                     </SelectGroup>
                 </SelectContent>
             </Select>
-            {selectedType.length > 0 && (
+            {selectedType?.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2">
                     {selectedType.map((topic, index) => (
                         <div key={index} className="flex items-center gap-2 px-4 py-1 rounded-xl bg-primary text-white w-fit text-sm">

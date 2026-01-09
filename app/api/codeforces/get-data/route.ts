@@ -1,5 +1,5 @@
 import connectDB from "@/lib/provider/connectDb";
-import { QuestionsData } from "@/lib/global.types";
+import { QuestionsData } from "@/lib/types/global.types";
 import { Problems } from "@/models/problems.model";
 import { NextResponse } from "next/server";
 
@@ -17,8 +17,6 @@ export const GET = async () => {
         const problems = data.result.problems.filter(
             (p: QuestionsData) => typeof p.rating === "number"
         );
-
-        console.log(problems);
 
         await Problems.create(problems);
 

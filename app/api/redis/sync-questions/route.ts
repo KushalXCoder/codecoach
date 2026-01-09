@@ -5,9 +5,6 @@ export const POST = async (req: NextRequest) => {
     try {
         const { codeforcesId, updatedTodaysQuestions } = await req.json();
 
-        console.log("Syncing questions for:", codeforcesId);
-        console.log("Questions to sync:", updatedTodaysQuestions);
-
         if(!codeforcesId || !updatedTodaysQuestions) {
             return NextResponse.json({ message: "CodeforcesId or updatedTodaysQuestions is missing" }, { status: 400 });
         }
@@ -17,8 +14,7 @@ export const POST = async (req: NextRequest) => {
         const key = `user-${codeforcesId}`;
 
         const ttl = await redisClient.ttl(key); // seconds
-
-        console.log(updatedTodaysQuestions);
+        
         await redisClient.set(key, JSON.stringify(updatedTodaysQuestions));
 
         if (ttl > 0) {

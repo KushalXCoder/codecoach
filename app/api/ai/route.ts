@@ -1,10 +1,10 @@
 import { Mistral } from '@mistralai/mistralai';
-import { getPrompt } from "@/lib/prompt";
+import { getPrompt } from "@/lib/helper/prompt";
 import { NextRequest, NextResponse } from "next/server";
 import redisClient, { connectRedis } from "@/lib/provider/connectRedis";
 import connectDB from '@/lib/provider/connectDb';
 import { Questions } from '@/models/questions.model';
-import { FetchedQuestionsData, QuestionsData } from '@/lib/global.types';
+import { FetchedQuestionsData, QuestionsData } from '@/lib/types/global.types';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const client = new Mistral({ apiKey: apiKey });
@@ -48,7 +48,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         try {
             parsed = JSON.parse(cleaned);
-            console.log(parsed);
             parsed.selected = parsed.selected.map((question: FetchedQuestionsData) => ({
                 ...question,
                 solved: false,
@@ -72,12 +71,10 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         user.todaysQuestions = parsed.selected;
         user.questions = [...user.questions, ...parsed.selected];
-        console.log("Storing today's questions for user:", user.questions);
+
         await user.save();
 
-        console.log("Successfully generated AI content for user:", parsed);
-
-        return NextResponse.json({ message: "Successfully generated content", selectedProblems: parsed }, { status: 200 });
+        return NextResponse.json({ message: "Successfully generated content", selectedProblems: parsed.selected }, { status: 200 });
     } catch (error) {
         console.error("Error generating AI content:", error);
         return NextResponse.json({ message: "AI generation failed" }, { status: 500 });
