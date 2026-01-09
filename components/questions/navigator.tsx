@@ -74,7 +74,7 @@ const Navigator = ({ className } : NavigatorProps) => {
             }
 
             toast("Profile setup completed!");
-            router.push('/problems');
+            router.push('/auth/callback');
         } else {
             setIdx(idx + 1);
         }

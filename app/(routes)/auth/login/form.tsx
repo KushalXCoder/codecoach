@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Loader from '@/components/loader';
 import { profileStore } from '@/store/profile.store';
 import userStore from '@/store/user.store';
 
@@ -66,16 +65,15 @@ const LoginForm = () => {
             body: JSON.stringify(formDetails),
         });
 
+        const data = await res.json();
         if(!res.ok) {
             throw new Error("Failed to login");
         }
 
-        const data = await res.json();
-
         hydrateFromServer(data.tokenData.data.profileData);
         setProfileCompleted(true);
         
-        router.push('/problems');
+        router.push('/auth/callback');
     } catch (error) {
         console.error("Failed login attempt", error);
         setLoading(false);
