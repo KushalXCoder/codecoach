@@ -1,4 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CodeCoach
+
+Personalized coding practice and contest preparation platform with Codeforces integration and AI-powered problem recommendations. Built with Next.js and TypeScript — designed to deploy on Vercel.
+
+**Highlights**
+- **Personalized practice:** Track solved problems, sync Codeforces data, and receive curated problem suggestions.
+- **Contests:** Create codeforces contest easily using the AI builder. (Coming Soon)
+- **Seamless sync:** Connect Codeforces and persist data for progress tracking.
+- **Modern stack:** Next.js (app router), TypeScript, React, PostCSS, and Redis/DB integrations.
+
+**Demo / Deploy**
+- Vercel: Recommended platform — automatic Next.js optimizations and edge functions.
+
+**Table of Contents**
+- **Overview**: What this project does
+- **Features**: Core features
+- **Tech Stack**: Key technologies
+- **Architecture**: High-level structure
+- **Getting Started**: Local setup and environment
+- **Development**: Commands and scripts
+- **Deployment**: Vercel tips
+- **Contributing**: See CONTRIBUTING.md
+- **Code of Conduct**: See CODE_OF_CONDUCT.md
+- **License**n+
+**Overview**
+
+CodeCoach helps developers practice algorithmic problems more effectively by combining contest tracking, personalized problem recommendations, and AI-driven analysis. It integrates with Codeforces to import user submissions, then surfaces targeted practice material and progress insights.
+
+**Features**
+- **Sync Codeforces**: Import problem history and submissions.
+- **Personalized queues**: Daily limits, saved topics, and custom goals.
+- **Problem management**: Save problems, view metadata, color-coded difficulty and tags.
+- **Profile analysis**: AI-driven suggestions and historical trends.
+- **API-first**: Server routes for auth, data sync, and AI endpoints.
+
+**Tech Stack**
+- **Framework**: Next.js (app router)
+- **Language**: TypeScript
+- **Styling**: PostCSS / global CSS
+- **Data**: Connectors present for DB and Redis (see provider directory)
+- **Hosting**: Vercel (recommended)
+
+**Architecture & Key Folders**
+- **app/**: Next.js app routes, pages, and layouts
+- **app/api/**: Server routes and API endpoints (auth, ai, codeforces sync)
+- **components/**: Reusable UI components and feature widgets
+- **services/**: Business logic and API wrappers
+- **lib/**: Utilities and helper functions
+- **provider/**: DB and Redis connection providers
+- **store/**: Client-side stores for state management
+
+**Getting Started (Local)**
+
+Prerequisites:
+- Node 18+ (or the version your team uses)
+- npm or pnpm
+
+1. Clone the repo
+
+```bash
+git clone <your-repo-url>
+cd codecoach
+```
+
+2. Install dependencies
+
+```bash
+npm install
+# or: pnpm install
+```
+
+3. Environment variables
+
+Create a `.env.local` file in the project root with the required variables.
+
+Notes:
+- The repository includes server routes that expect DB and cache connections — ensure `MONGODB_URI`/`REDIS_URL` match your environment or mock them locally.
+
+4. Run locally
+
+```bash
+npm run dev
+# Open http://localhost:3000
+```
+
+**Scripts**
+- **dev**: Runs the Next.js dev server (`npm run dev`)
+- **build**: Builds for production (`npm run build`)
+- **start**: Starts the production server (`npm run start`)
+- **lint/test**: Add or adapt linters/tests as needed
+
+**Deployment (Vercel)**
+
+1. Import the repository into Vercel.
+2. Set environment variables in Vercel dashboard (mirror `.env.local`).
+3. Use default Next.js build command (`npm run build`) and output directory.
+4. Enable any required integrations (Redis, MongoDB Atlas) through environment connections.
+
+Tips for Vercel Open Source Program submission:
+- Include this README and the `CONTRIBUTING.md` + `CODE_OF_CONDUCT.md` files.
+- Provide a clear demo link (Vercel preview or live deployment) and brief usage notes in your submission.
+
+**Contributing**
+
+Thank you for considering contributing! See **CONTRIBUTING.md** for guidelines on filing issues, coding standards, branch names, PR process, and tests.
+
+**Code of Conduct**
+
+Please follow the community guidelines in **CODE_OF_CONDUCT.md**. Be respectful and collaborative.
+
+**License**
+
+This repository does not include a license file by default. For open source program submission, we recommend adding a license (MIT is common). If you want, I can add a `LICENSE` file for you.
+
+**Acknowledgements**
+- Built with Next.js and community libraries. Thanks to contributors and maintainers.
 
 ## Getting Started
 
