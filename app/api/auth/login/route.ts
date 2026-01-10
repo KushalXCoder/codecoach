@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
         const token = jwt.sign(tokenData, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         
         // const res = NextResponse.json({ message: "Login Successful", tokenData }, { status: 200 });
-        const res = NextResponse.redirect(new URL('/auth/callback', req.url));
+        const res = NextResponse.redirect(new URL('/auth/callback', req.url), 303);
 
         // Attach cookie with the response
         res.cookies.set('token', token, {

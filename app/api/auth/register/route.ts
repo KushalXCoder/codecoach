@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
             });
 
             // const res = NextResponse.json({ message: 'User registered', status: "Success", newUser }, { status: 200 });
-            const res = NextResponse.redirect(new URL('/auth/callback', req.url));
+            const res = NextResponse.redirect(new URL('/auth/callback', req.url), 303);
 
             const tokenData = {
                 email: newUser.email,
