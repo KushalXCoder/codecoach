@@ -6,10 +6,15 @@ import jwt from "jsonwebtoken";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const { email, password } = await req.json();
+        const formData = await req.formData();
+
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
         if(!email || !password) {
-            return NextResponse.json({ message: "Missing details" }, { status: 400 });
+            return NextResponse.redirect(
+                new URL("/auth/login?error=missing", req.url)
+            );
         }
 
         await connectDB();
@@ -24,7 +29,8 @@ export const POST = async (req: NextRequest) => {
                 password: hashedPassword,
             });
 
-            const res = NextResponse.json({ message: 'User registered', status: "Success", newUser }, { status: 200 });
+            // const res = NextResponse.json({ message: 'User registered', status: "Success", newUser }, { status: 200 });
+            const res = NextResponse.redirect(new URL('/auth/callback', req.url));
 
             const tokenData = {
                 email: newUser.email,
@@ -42,8 +48,12 @@ export const POST = async (req: NextRequest) => {
             return res;
         }
 
-        return NextResponse.json({ message: 'User already exists', status: "Exists" }, { status: 400 });
+        return NextResponse.redirect(
+            new URL("/auth/login?error=exists", req.url)
+        );
     } catch (error) {
-        return NextResponse.json({ message: 'Internal Server Error', status: "Error", error }, { status: 500 });
+        return NextResponse.redirect(
+            new URL("/auth/login?error=server", req.url)
+        );
     }
 }

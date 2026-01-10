@@ -6,10 +6,15 @@ import jwt from "jsonwebtoken";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const { email, password } = await req.json();
+        const formData = await req.formData();
+
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
         if(!email || !password) {
-            return NextResponse.json({ message: "Email or Password missing" }, { status: 400 });
+            return NextResponse.redirect(
+                new URL("/auth/login?error=missing", req.url)
+            );
         }
 
         await connectDB();
@@ -17,7 +22,9 @@ export const POST = async (req: NextRequest) => {
         const user = await User.findOne({ email });
 
         if(!user) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
+            return NextResponse.redirect(
+                new URL("/auth/login?error=invalid", req.url)
+            );
         }
 
         const userPassword = user.password;
@@ -25,9 +32,12 @@ export const POST = async (req: NextRequest) => {
         const isPassword = await bcrypt.compare(password, userPassword);
 
         if(!isPassword) {
-            return NextResponse.json({ message: "Invalid Credentials" }, { status: 401 });
+            return NextResponse.redirect(
+                new URL("/auth/login?error=invalid", req.url)
+            );
         }
 
+        // Create the token data
         const tokenData = {
             data: {
                 email: user.email,
@@ -42,10 +52,13 @@ export const POST = async (req: NextRequest) => {
             }
         }
 
-        const res = NextResponse.json({ message: "Login Successful", tokenData }, { status: 200 });
-
+        // Sign the token using JWT
         const token = jwt.sign(tokenData, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         
+        // const res = NextResponse.json({ message: "Login Successful", tokenData }, { status: 200 });
+        const res = NextResponse.redirect(new URL('/auth/callback', req.url));
+
+        // Attach cookie with the response
         res.cookies.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -56,6 +69,8 @@ export const POST = async (req: NextRequest) => {
         return res;
         
     } catch (error) {
-        return NextResponse.json({ message: "Internal Server Error", error }, { status: 500 });
+        return NextResponse.redirect(
+            new URL("/auth/login?error=server", req.url)
+        );
     }
 }

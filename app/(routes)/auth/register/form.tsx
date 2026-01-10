@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
-import { FcGoogle } from 'react-icons/fc';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Loader from '@/components/loader';
+import { toast } from 'sonner';
 
 type FormDetails = {
     email: string,
@@ -17,7 +16,16 @@ type Errors = {
 };
 
 const RegisterForm = () => {
-  const router = useRouter();
+  const error = useSearchParams().get('error');
+  
+  if(error) {
+    toast(error === 'missing' ? "Email or Password is missing"
+        : error === 'invalid' ? "Invalid Email or Password"
+        : error === 'server' ? "Internal Server Error"
+        : error === 'exists' ? "User already exists"
+        : "An unknown error occurred"
+    );
+  };
 
   const initialErrors = {
     errorElement: "",
@@ -40,51 +48,60 @@ const RegisterForm = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
 
+//     setLoading(true);
+
+//     if(!formDetails.email) {
+//         setErrors({
+//             errorElement: "email",
+//             errorMessage: "Email is required",
+//         });
+//         setLoading(false);
+//         return;
+//     } else if(!formDetails.password) {
+//         setErrors({
+//             errorElement: "password",
+//             errorMessage: "Password is required",
+//         });
+//         setLoading(false);
+//         return;
+//     } else {
+//         try {
+//             setErrors(initialErrors);
+
+//             const res = await fetch('/api/auth/register', {
+//                 method: "POST",
+//                 body: JSON.stringify(formDetails),
+//             });
+
+//             // if(res) {
+//             //     const data = await res.json();
+//             //     if(data.status === "Success") {
+//             //         router.push('/profile-setup');
+//             //     } else if(data.status === "Exists") {
+//             //         router.push('/auth/login');
+//             //     }
+//             // }
+//         } catch (error) {
+//             console.error("Error submitting form:", error);
+//             setLoading(false);
+//         }
+//     }
+//   };
+
+  const handleSubmit = () => {
     setLoading(true);
-
-    if(!formDetails.email) {
-        setErrors({
-            errorElement: "email",
-            errorMessage: "Email is required",
-        });
-        setLoading(false);
-        return;
-    } else if(!formDetails.password) {
-        setErrors({
-            errorElement: "password",
-            errorMessage: "Password is required",
-        });
-        setLoading(false);
-        return;
-    } else {
-        try {
-            setErrors(initialErrors);
-
-            const res = await fetch('/api/auth/register', {
-                method: "POST",
-                body: JSON.stringify(formDetails),
-            });
-
-            if(res) {
-                const data = await res.json();
-                if(data.status === "Success") {
-                    router.push('/profile-setup');
-                } else if(data.status === "Exists") {
-                    router.push('/auth/login');
-                }
-            }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            setLoading(false);
-        }
-    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className='w-full mt-5 flex flex-col items-center'>
+    <form
+        action='/api/auth/register'
+        method='POST'
+        onSubmit={handleSubmit}
+        className='w-full mt-5 flex flex-col items-center'
+    >
         <div className='email flex flex-col gap-2 font-sans mt-3 w-full'>
             <label htmlFor="email" className='text-lg'>Email</label>
             <input type="email" name='email' value={formDetails.email} onChange={handleChange} placeholder='Enter your email here' className='w-full border border-gray-500 outline-0 rounded-lg px-4 py-2 focus:border-green-300'/>
@@ -95,7 +112,7 @@ const RegisterForm = () => {
             <input type="password" name='password' value={formDetails.password} onChange={handleChange} placeholder='Enter your password' className='w-full border border-gray-500 outline-0 rounded-lg px-4 py-2 focus:border-green-300'/>
             {errors && errors.errorElement === 'password' && <span className='text-red-500 font-sans'>{errors.errorMessage}</span>}
         </div>
-        <button className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-2xs hover:shadow-white transition-shadow transition-colors'>
+        <button disabled={isLoading} className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600'>
             {isLoading ? (
                 "Submitting..."
             ) : (

@@ -26,11 +26,11 @@ const DashboardPage = () => {
   const [tabValue, setTabValue] = useState<string>('today');
   const [visibleCnt, setVisibleCnt] = useState<number>(5);
 
-  const { data: quote, isLoading: isQuoteLoading } = useQuery({
-      queryKey: ['quote'],
-      queryFn: getQuote,
-      staleTime: 24 * 60 * 60 * 1000,
-  });
+  // const { data: quote, isLoading: isQuoteLoading } = useQuery({
+  //     queryKey: ['quote'],
+  //     queryFn: getQuote,
+  //     staleTime: 24 * 60 * 60 * 1000,
+  // });
   
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
   
@@ -63,7 +63,7 @@ const DashboardPage = () => {
   
   return (
     <div className="flex flex-1 flex-col">
-      <DailyQuote quote={quote!} />
+      {/* <DailyQuote quote={quote!} /> */}
       {profileCompleted ? (
         <div className='flex flex-col flex-1 mt-5'>
           <ColorCode />

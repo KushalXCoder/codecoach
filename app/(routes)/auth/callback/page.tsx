@@ -1,12 +1,16 @@
 "use client";
 
 import { fetchMe } from "@/lib/provider/auth-provider";
+import { profileStore } from "@/store/profile.store";
+import userStore from "@/store/user.store";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const AuthCallbackPage = () => {
     const router = useRouter();
+    const { hydrateFromServer } = profileStore();
+    const { setProfileCompleted } = userStore();
     
     const { data } = useQuery({
         queryKey: ['me'],
@@ -15,15 +19,21 @@ const AuthCallbackPage = () => {
     });
 
     useEffect(() => {
-        if(data) {
-            console.log(data);
-            const user = data.user.data;
+        if(!data) return;
 
-            if(user.setupCompleted) {
-                router.push('/problems');
-            } else {
-                router.push('/profile-setup');
-            }
+        console.log(data);
+        const user = data.user.data;
+
+        console.log("User setup completed:", user.setupCompleted);
+        
+        // Update the global state with user profile information
+        setProfileCompleted(user.setupCompleted);
+        hydrateFromServer(user.profileData);
+
+        if(user.setupCompleted) {
+            router.push('/problems');
+        } else {
+            router.push('/profile-setup');
         }
     },[data]);
 

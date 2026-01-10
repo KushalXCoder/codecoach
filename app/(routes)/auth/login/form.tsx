@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { profileStore } from '@/store/profile.store';
 import userStore from '@/store/user.store';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 type Errors = {
     errorElement: string,
@@ -17,7 +18,15 @@ type FormDetails = {
 };
 
 const LoginForm = () => {
-  const router = useRouter();  
+  const error = useSearchParams().get('error');
+  
+  if(error) {
+    toast(error === 'missing' ? "Email or Password is missing"
+        : error === 'invalid' ? "Invalid Email or Password"
+        : error === 'server' ? "Internal Server Error"
+        : "An unknown error occurred"
+    );
+  };
 
   const initialErrors = {
     errorElement: "",
@@ -44,44 +53,50 @@ const LoginForm = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
 
+//     setLoading(true);
+
+//     if(!formDetails.email) {
+//         setErrors({ errorElement: "email", errorMessage: "Email is missing" });
+//         setLoading(false);
+//         return;
+//     } else if(!formDetails.password) {
+//         setErrors({ errorElement: "password", errorMessage: "Password is missing" });
+//         setLoading(false);
+//         return;
+//     }
+
+//     try {
+//         const res = await fetch('/api/auth/login', {
+//             method: "POST",
+//             body: JSON.stringify(formDetails),
+//         });
+
+//         // const data = await res.json();
+//         // if(!res.ok) {
+//         //     throw new Error("Failed to login");
+//         // }
+
+//         // hydrateFromServer(data.tokenData.data.profileData);
+//         setProfileCompleted(true);
+//     } catch (error) {
+//         console.error("Failed login attempt", error);
+//         setLoading(false);
+//     }
+//   }
+  const handleSubmit = () => {
     setLoading(true);
-
-    if(!formDetails.email) {
-        setErrors({ errorElement: "email", errorMessage: "Email is missing" });
-        setLoading(false);
-        return;
-    } else if(!formDetails.password) {
-        setErrors({ errorElement: "password", errorMessage: "Password is missing" });
-        setLoading(false);
-        return;
-    }
-
-    try {
-        const res = await fetch('/api/auth/login', {
-            method: "POST",
-            body: JSON.stringify(formDetails),
-        });
-
-        const data = await res.json();
-        if(!res.ok) {
-            throw new Error("Failed to login");
-        }
-
-        hydrateFromServer(data.tokenData.data.profileData);
-        setProfileCompleted(true);
-        
-        router.push('/auth/callback');
-    } catch (error) {
-        console.error("Failed login attempt", error);
-        setLoading(false);
-    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className='w-full mt-5 flex flex-col items-center'>
+    <form
+        action='/api/auth/login'
+        method='POST'
+        onSubmit={handleSubmit}
+        className='w-full mt-5 flex flex-col items-center'
+    >
         <div className='email flex flex-col gap-2 font-sans mt-3 w-full'>
             <label htmlFor="email" className='text-lg'>Email</label>
             <input type="email" name='email' value={formDetails.email} onChange={handleChange} placeholder='Enter your email here' className='w-full border border-gray-500 outline-0 rounded-lg px-4 py-2 focus:border-green-300'/>
@@ -92,14 +107,14 @@ const LoginForm = () => {
             <input type="password" name='password' value={formDetails.password} onChange={handleChange} placeholder='Enter your password' className='w-full border border-gray-500 outline-0 rounded-lg px-4 py-2 focus:border-green-300'/>
             {errors && errors.errorElement === 'password' && <span className='text-red-500 font-sans'>{errors.errorMessage}</span>}
         </div>
-        <button disabled={isLoading} className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-2xs hover:shadow-white transition-shadow transition-colors'>
+        <button disabled={isLoading} className='w-full flex justify-center items-center rounded-lg py-2 mt-8 font-sans cursor-pointer bg-green-500 hover:bg-green-600'>
             {isLoading ? (
                 "Submitting..."
             ) : (
                 "Submit"
             )}
         </button>
-        <h1 className='mt-4 font-sans'>Already a member? <Link href="/auth/register" className='text-primary hover:underline transition-all'>Register</Link></h1>
+        <h1 className='mt-4 font-sans'>New here? <Link href="/auth/register" className='text-primary hover:underline transition-all'>Register</Link></h1>
     </form>
   )
 }
