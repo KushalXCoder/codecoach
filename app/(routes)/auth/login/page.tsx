@@ -1,3 +1,6 @@
+"use client";
+
+import { Suspense } from 'react';
 import LoginForm from './form';
 
 const LoginPage = () => {
@@ -11,7 +14,9 @@ const LoginPage = () => {
             <p className='font-sans text-gray-500 text-xl'>Enter your details to get started</p>
 
             {/* Form starts here */}
-            <LoginForm />
+            <Suspense>
+              <LoginForm />
+            </Suspense>
         </div>
     </div>
   )

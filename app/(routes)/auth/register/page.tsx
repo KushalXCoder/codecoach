@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { Suspense } from 'react';
 import RegisterForm from './form';
 
 const SignInPage = () => {
@@ -12,7 +14,9 @@ const SignInPage = () => {
             <p className='font-sans text-gray-500 text-xl'>Enter your details to get started</p>
 
             {/* Form starts here */}
-            <RegisterForm /> 
+            <Suspense>
+              <RegisterForm /> 
+            </Suspense>
         </div>
     </div>
   )
