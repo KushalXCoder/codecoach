@@ -33,25 +33,36 @@ const DashboardPage = () => {
   // });
   
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
+
+  useEffect(() => {
+    console.log(leveledQuestions);
+  }, [leveledQuestions]);
   
-  const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestions;
+  const leveledQuestionsLength = 
+    leveledQuestions.low.length +
+    leveledQuestions.mid.length +
+    leveledQuestions.high.length;
+
+  const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestionsLength > 0;
   
-  const { data: selectedQuestions, isLoading: selectedQuestionsLoading, isError: selectedQuestionsError } = useQuery({
+  const { data: selectedQuestions, isError: selectedQuestionsError } = useQuery({
     queryKey: ['questions'],
     queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
   });
-
+  
   useEffect(() => {
     if (selectedQuestions?.selectedProblems) {
       setTodaysQuestions(selectedQuestions.selectedProblems);
     }
   }, [selectedQuestions, setTodaysQuestions]);
 
-  if(!hydrated || !profileHydrated || !problemsHydrated || questionsLoading || selectedQuestionsLoading) {
+  const hasLeveledQuestions = leveledQuestionsLength > 0;
+  const hasQuestions = todaysQuestions.length > 0;
+
+  if(!hydrated || !profileHydrated || !problemsHydrated || !hasLeveledQuestions || !hasQuestions) {
     return <Loader />;
   }
-
 
   if(questionsError || selectedQuestionsError) {
     return (
@@ -65,7 +76,7 @@ const DashboardPage = () => {
     <div className="flex flex-1 flex-col">
       {/* <DailyQuote quote={quote!} /> */}
       {profileCompleted ? (
-        <div className='flex flex-col flex-1 mt-5'>
+        <div className='flex flex-col flex-1'>
           <ColorCode />
           <Tabs defaultValue='today' onValueChange={(value) => setTabValue(value)} className='font-sans'>
             <div className='flex justify-between items-center'>

@@ -78,6 +78,8 @@ export const useFilterData = () => {
                 return;
             }
 
+            console.log(prevQuestions);
+
             const solvedIds = new Set(
                 prevQuestions.data.map((q: FetchedQuestionsData) => q.id),
             );
@@ -93,6 +95,8 @@ export const useFilterData = () => {
                     normalizedImproveTopics.includes(normalize(tag))
                 )
             );
+
+            console.log(filteredByTopics);
 
             // Stage 3: Score the selected questions
             const ranked: RankedData[] = filteredByTopics

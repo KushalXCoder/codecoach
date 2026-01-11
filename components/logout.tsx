@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner";
 import { profileStore } from "@/store/profile.store";
 import { cn } from "@/lib/utils";
+import { problemsStore } from "@/store/problems.store";
 
 type LogoutProps = {
     className: string;
@@ -11,14 +12,21 @@ type LogoutProps = {
 
 const Logout = ({ className } : LogoutProps) => {
     const router = useRouter();
-    const { reset } = profileStore();
+    const { reset: questionsReset } = problemsStore();
+    const { reset: profileReset } = profileStore();
 
     const handleLogout = async () => {
         const data = await userLogout();
 
         if(data.success) {
-            reset();
+            // Reset the store
+            questionsReset();
+            profileReset();
+
+            // Push to home
             router.push('/');
+
+            // Display toast
             toast(data.message || "Logged out successfully");
         } else {
             toast.error(data.message || "Logout failed");

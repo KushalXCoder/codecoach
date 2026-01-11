@@ -22,10 +22,9 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
     const { setCodeforcesId, setRating, setDailyLimit, setExperiencedTopics, setImproveTopics } = profileStore();
     const router = useRouter();
 
-    const { data: user } = useQuery({
+    const { data: user, isError } = useQuery({
         queryKey: ["me"],
         queryFn: fetchMe,
-        enabled: false,
         retry: false,
     });
 
@@ -45,6 +44,12 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
             setExperiencedTopics(data.profileData.experiencedTopics);
         }
     }, [user]);
+
+    useEffect(() => {
+        if(isError) {
+            router.push('/auth/register');
+        }
+    }, [isError]);
 
     return children;
 }

@@ -16,6 +16,10 @@ const QuestionsSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    streak: {
+        type: Number,
+        default: 0,
+    },
 });
 
 export const Questions = mongoose.models.Questions || mongoose.model("Questions", QuestionsSchema);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Animated background grid
 const GridBackground = () => (
@@ -15,27 +15,6 @@ const GridBackground = () => (
   </div>
 );
 
-// Floating code snippets
-const FloatingCode = ({ code, delay, top, left }: any) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  return (
-    <div
-      className={`absolute hidden md:block bg-gray-900/80 backdrop-blur border border-green-500/20 rounded-lg px-3 py-2 text-green-400 font-mono text-xs transition-all duration-1000 ${
-        isVisible ? 'opacity-60 translate-y-0' : 'opacity-0 -translate-y-4'
-      }`}
-      style={{ top, left, animation: 'float 6s ease-in-out infinite' }}
-    >
-      {code}
-    </div>
-  );
-};
-
 export default function Home() {
   const [heroVisible, setHeroVisible] = useState(true);
   const [ctaHovered, setCtaHovered] = useState(false);
@@ -43,12 +22,6 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden">
       <GridBackground />
-
-      {/* Floating Code Snippets */}
-      <FloatingCode code="for(int i=0; i<n; i++)" delay={200} top="15%" left="10%" />
-      <FloatingCode code="vector<int> dp(n+1)" delay={400} top="25%" left="85%" />
-      <FloatingCode code="while(l <= r)" delay={600} top="70%" left="12%" />
-      <FloatingCode code="sort(arr.begin())" delay={800} top="65%" left="82%" />
 
       {/* Hero Section */}
       <div className={`text-center max-w-5xl transition-all duration-1000 font-sans ${
@@ -62,13 +35,13 @@ export default function Home() {
           CodeCoach
         </h1>
 
-        <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed">
+        {/* <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed">
           Master competitive programming with{' '}
           <span className="text-green-400 font-semibold">personalized daily challenges</span>
           {' '}from Codeforces
-        </p>
+        </p> */}
 
-        <p className="text-gray-400 mb-12 max-w-2xl mx-auto">
+        <p className="text-gray-400 mb-8 max-w-2xl mx-auto text-lg">
           Tailored problems based on your rating, preferred topics, and learning goals. 
           Progress from beginner to expert with intelligent problem selection.
         </p>
@@ -77,7 +50,7 @@ export default function Home() {
           <button
             onMouseEnter={() => setCtaHovered(true)}
             onMouseLeave={() => setCtaHovered(false)}
-            className="mb-12 relative px-8 py-4 bg-green-500 cursor-pointer hover:bg-green-600 text-white font-semibold rounded-lg transition-all duration-300 transform hover:shadow-2xl hover:shadow-green-500/50"
+            className="mb-12 relative px-5 py-3 bg-green-500 cursor-pointer hover:bg-green-600 text-white font-semibold rounded-lg transition-all duration-300 transform hover:shadow-2xl hover:shadow-green-500/50"
           >
             <span className="relative z-10">Start Coding Today</span>
           </button>

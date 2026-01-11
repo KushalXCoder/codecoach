@@ -154,3 +154,22 @@ export const markSetupCompleted = async (codeforcesId: string) => {
         return { success: false, message: "Failed to mark setup as completed" };
     }
 }
+
+export const saveUserChanges = async (codeforcesId: string, updatedChanges: Partial<ProfileData>) => {
+    try {
+        const res = await fetch('/api/profile/save-changes', {
+            method: "PUT",
+            body: JSON.stringify({ codeforcesId, updatedChanges }),
+        });
+    
+        const data = await res.json();
+        if(!res.ok) {
+            throw new Error(data.message || "Failed to save user changes");
+        }
+    
+        return { success: true, message: data.message || "User changes saved successfully" };
+    } catch (error: any) {
+        console.error("Failed to save user changes:", error);
+        return { success: false, message: error.message || "Failed to save user changes" };
+    }
+}

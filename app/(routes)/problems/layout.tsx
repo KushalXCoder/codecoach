@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "@/components/footer";
 // import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ export default function DashboardLayout({
                 <main className="flex-1 container max-w-7xl mx-auto px-28">
                     {children}
                 </main>
-                {/* <Footer /> */}
+                <Footer />
             </div>
         </QueryClientProvider>
     )

@@ -13,15 +13,16 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
 } from "recharts";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/profile-header";
 import { useQuery } from "@tanstack/react-query";
 import { userPrevQuestions } from "@/services/user.service";
 import { profileStore } from "@/store/profile.store";
-import { useEffect } from "react";
 import Loader from "@/components/loader";
 import Logout from "@/components/logout";
+import { getProfileData } from "@/services/profile.service";
+import { useEffect } from "react";
+import Settings from "@/components/profile/settings";
 
 const difficultyData = [
   { name: "Easy", value: 120, color: "#22c55e" },
@@ -38,15 +39,19 @@ const ratingData = [
 ];
 
 const ProfilePage = () => {
-    const { hydrated, rating, dailyLimit, codeforcesId } = profileStore();
+    const { hydrated, codeforcesId } = profileStore();
 
-    const { data: prevQuestions, isLoading: prevQuestionsLoading, isError: prevQuestionsError } = useQuery({
-        queryKey: ['previous-questions'],
-        queryFn: async () => userPrevQuestions(codeforcesId),
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ['profile-data'],
+        queryFn: () => getProfileData(codeforcesId),
         enabled: !!codeforcesId,
     });
 
-    if(!hydrated) {
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+
+    if(!hydrated || isLoading) {
         return (
             <div className="h-screen flex justify-center items-center">
                 <Loader />
@@ -60,31 +65,32 @@ const ProfilePage = () => {
                 <ArrowLeft className="size-4 hover:underline" />
                 Back
             </Link>
+
             <ProfileHeader codeforcesId={codeforcesId} />
-            <div className="flex w-full justify-end">
+            <div className="flex w-full justify-between items-end">
+                <p className="text-blue-500">Currently, we just track your CodeCoach stats !</p>
                 <Logout className="mt-3 w-1/6" />
             </div>
+
             <div className="mt-5 space-y-6">
             {/* Stats cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <Card className="bg-accent-foreground py-0 justify-center">
                         <CardContent className="px-5">
                             <p className="text-gray-400 text-sm">Solved</p>
-                            <h2 className="text-3xl font-semibold text-primary">240</h2>
+                            <h2 className="text-3xl font-semibold text-primary">{data?.profileData.solvedQuestions}</h2>
                         </CardContent>
                     </Card>
-
                     <Card className="bg-accent-foreground py-0">
                         <CardContent className="p-5">
                             <p className="text-gray-400 text-sm">Total Problems</p>
-                            <h2 className="text-3xl font-semibold text-primary">{prevQuestions?.data.length}</h2>
+                            <h2 className="text-3xl font-semibold text-primary">{data?.profileData.questions.length}</h2>
                         </CardContent>
                     </Card>
-
                     <Card className="bg-accent-foreground py-0">
                         <CardContent className="p-5">
-                            <p className="text-gray-400 text-sm">Acceptance</p>
-                            <h2 className="text-3xl font-semibold text-primary">68%</h2>
+                            <p className="text-gray-400 text-sm">Streak</p>
+                            <h2 className="text-3xl font-semibold text-primary">5 days 🔥</h2>
                         </CardContent>
                     </Card>
                 </div>
@@ -134,25 +140,9 @@ const ProfilePage = () => {
                 {/* User settings */}
                 <Card className="bg-accent-foreground">
                     <CardContent className="px-6">
-                        <h3 className="text-white mb-6">Preferences</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
-                                <label className="text-gray-400 text-sm">Your Rating</label>
-                                <Input
-                                    type="number"
-                                    defaultValue={rating ?? 0}
-                                    className="mt-2 text-primary"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-400 text-sm">Daily Problem Limit</label>
-                                <Input
-                                    type="number"
-                                    defaultValue={dailyLimit ?? 0}
-                                    className="mt-2 text-primary"
-                                />
-                            </div>
-                        </div>
+                        <h3 className="text-white">Account Settings</h3>
+                        <p className="text-destructive mb-4 text-sm">Note: Changes will apply to the questions you will recieve the next day or when today's questions time is over.</p>
+                        <Settings />
                     </CardContent>
                 </Card>
             </div>

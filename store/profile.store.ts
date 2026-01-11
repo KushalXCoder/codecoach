@@ -7,6 +7,7 @@ type ProfileStore = {
     rating: number | null;
     experiencedTopics: string[];
     improveTopics: string[];
+    updatedChanges: Partial<ProfileStore>;
     hydrated: boolean;
 
     setCodeforcesId: (id: string) => void;
@@ -14,6 +15,7 @@ type ProfileStore = {
     setRating: (val: number) => void;
     setExperiencedTopics: (topics: string[]) => void;
     setImproveTopics: (topics: string[]) => void;
+    setUpdatedChanges: (changes: Partial<ProfileStore>) => void;
     setHydrated: (val: boolean) => void;
 
     reset: () => void;
@@ -27,6 +29,7 @@ const initialState = {
     rating: null,
     experiencedTopics: [],
     improveTopics: [],
+    updatedChanges: {},
     hydrated: false,
 };
 
@@ -39,6 +42,7 @@ export const profileStore = create<ProfileStore>()(
         setRating: (val) => set({ rating: val }),
         setExperiencedTopics: (topics) => set({ experiencedTopics: topics }),
         setImproveTopics: (topics) => set({ improveTopics: topics }),
+        setUpdatedChanges: (changes) => set({ updatedChanges: { ...get().updatedChanges, ...changes } }),
         setHydrated: (val) => set({ hydrated: val }),
 
         reset: () => set({ ...initialState }),

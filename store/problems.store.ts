@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type ProblemsStore = {
-    lastFetched: number | null;
     hydrated: boolean;
     leveledQuestions: LeveledQuestionsData;
     todaysQuestions: QuestionsData[];
@@ -11,18 +10,23 @@ type ProblemsStore = {
     setLeveledQuestions: (bands: LeveledQuestionsData) => void;
     setTodaysQuestions: (questions: QuestionsData[]) => void;
     setHydrated: (value: boolean) => void;
+    reset: () => void;
+};
+
+const initalData = {
+    leveledQuestions: { low: [], mid: [], high: [] },
+    todaysQuestions: [],
+    hydrated: false,
 };
 
 export const problemsStore = create<ProblemsStore>()(
     persist((set) => ({
-        lastFetched: null,
-        leveledQuestions: { low: [], mid: [], high: [] },
-        todaysQuestions: [],
-        hydrated: false,
+        ...initalData,
 
-        setLeveledQuestions: (questions: LeveledQuestionsData) => set({ leveledQuestions: questions, lastFetched: Date.now() }),
+        setLeveledQuestions: (questions: LeveledQuestionsData) => set({ leveledQuestions: questions }),
         setTodaysQuestions: (questions: QuestionsData[]) => set({ todaysQuestions: questions }),
         setHydrated: (value: boolean) => set({ hydrated: value }),
+        reset: () => set({ ...initalData }),
     }), {
         name: "problems-storage",
         onRehydrateStorage: () => (state) => {
