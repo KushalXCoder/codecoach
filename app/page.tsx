@@ -1,6 +1,7 @@
 "use client";
 
 import StartButton from "@/components/start-button";
+import { NumberTicker } from "@/components/ui/number-ticker";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -45,17 +46,20 @@ export default function Home() {
 
         <div className="flex justify-center items-center">
           {[
-            { value: '10K+', label: 'Problems' },
-            { value: '5K+', label: 'Active Users' },
-            { value: '15+', label: 'Topics' }
+            { value: '10', label: 'Problems' },
+            { value: '15', label: 'Topics' }
           ].map((stat, idx) => (
             <div 
               key={idx}
-              className="w-40 transition-all duration-700"
+              className="w-30 transition-all duration-700"
             >
-              <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">
-                {stat.value}
-              </div>
+            <div>
+              <NumberTicker
+                value={Number(stat.value)}
+                className="text-3xl md:text-4xl font-bold text-green-400 mb-2"
+              />
+              <span className="text-3xl md:text-4xl font-bold text-green-400 mb-2">{stat.label === 'Topics' ? '+' : 'K+'}</span>
+            </div>
               <div className="text-gray-400 text-sm">{stat.label}</div>
             </div>
           ))}
