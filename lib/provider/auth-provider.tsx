@@ -45,11 +45,5 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
         }
     }, [user]);
 
-    useEffect(() => {
-        if(isError) {
-            router.push('/auth/register');
-        }
-    }, [isError]);
-
     return children;
 }

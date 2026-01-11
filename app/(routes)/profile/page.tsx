@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 import Link from "next/link";
 import {
   PieChart,
@@ -23,6 +23,7 @@ import Logout from "@/components/logout";
 import { getProfileData } from "@/services/profile.service";
 import { useEffect } from "react";
 import Settings from "@/components/profile/settings";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const difficultyData = [
   { name: "Easy", value: 120, color: "#22c55e" },
@@ -89,12 +90,21 @@ const ProfilePage = () => {
                     </Card>
                     <Card className="bg-accent-foreground py-0">
                         <CardContent className="p-5">
-                            <p className="text-gray-400 text-sm">Streak</p>
+                            <div className="flex justify-between items-end">
+                                <p className="text-gray-400 text-sm">Streak</p>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Info className="text-white size-4" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="font-sans max-w-70">
+                                        <p className="text-sm">A day is counted only when you solve all the problems assigned for that day.</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
                             <h2 className="text-3xl font-semibold text-primary">5 days 🔥</h2>
                         </CardContent>
                     </Card>
                 </div>
-
                 {/* Charts */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Pie Chart */}
@@ -136,7 +146,6 @@ const ProfilePage = () => {
                         </CardContent>
                     </Card>
                 </div>
-
                 {/* User settings */}
                 <Card className="bg-accent-foreground">
                     <CardContent className="px-6">

@@ -8,7 +8,6 @@ import { getUserSubmissions } from "@/services/user.service";
 import { useEffect, useState } from "react";
 import { problemsStore } from "@/store/problems.store";
 import { syncQuestions, updateQuestionDB } from "@/services/questions.service";
-import Loader from "../loader";
 
 type SyncButtonProps = {
     codeforcesId: string,
@@ -82,12 +81,8 @@ const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => 
         })();
     },[userSubmissionsSet, questions, setTodaysQuestions]);
 
-    if(!questions || questions.length === 0) {
-        return <Loader />;
-    }
-
     return (
-        <Button onClick={handleSync} disabled={!questions || isLoading || isRefetching}className="cursor-pointer">
+        <Button onClick={handleSync} disabled={!questions || questions.length === 0 || isLoading || isRefetching} className="cursor-pointer">
             {isLoading || isRefetching ? 'Syncing...' : 'Sync Submissions'}
         </Button>
     )
