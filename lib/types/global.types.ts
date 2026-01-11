@@ -78,3 +78,5 @@ export type JWTPayload = {
 export type JWTCfPayload = {
     verified: boolean;
 }
+
+export type RatingType = "easy" | "medium" | "hard" | "expert";

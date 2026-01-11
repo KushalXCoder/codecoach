@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
                 codeforcesId,
                 questions: [],
                 todaysQuestions: [],
-                solvedQuestions: 0,
+                solvedQuestions: [],
             });
 
             return NextResponse.json({ message: "User questions found", data: [] }, { status: 200 });

@@ -13,8 +13,8 @@ const QuestionsSchema = new mongoose.Schema({
         type: [Object],
     },
     solvedQuestions: {
-        type: Number,
-        default: 0,
+        type: [String],
+        default: [],
     },
     streak: {
         type: Number,

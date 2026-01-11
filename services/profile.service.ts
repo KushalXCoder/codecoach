@@ -1,9 +1,9 @@
-import { ProfileData, QuestionsData } from "@/lib/types/global.types";
+import { ProfileData, QuestionsData, RatingType } from "@/lib/types/global.types";
 
 
 type ProfileDataType = {
     codeforcesId: string,
-    solvedQuestions: number,
+    solvedQuestions: RatingType[],
     questions: QuestionsData[],
     todaysQuestions: QuestionsData[],
     streak: number,

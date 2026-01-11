@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (req: NextRequest) => {
     try {
-        const { codeforcesId, updatedTodaysQuestions } = await req.json();
-        if(!codeforcesId || !updatedTodaysQuestions) {
+        const { codeforcesId, updatedTodaysQuestions, solvedQuestionsTags } = await req.json();
+        if(!codeforcesId || !updatedTodaysQuestions || !solvedQuestionsTags) {
             return NextResponse.json({ message: "Invalid request" }, { status: 400 });
         }
 
@@ -18,7 +18,7 @@ export const PUT = async (req: NextRequest) => {
         }
 
         user.todaysQuestions = updatedTodaysQuestions;
-        user.solvedQuestions = user.solvedQuestions + solvedCnt;
+        user.solvedQuestions = [...user.solvedQuestions, ...solvedQuestionsTags];
 
         const saved = await user.save();
         if(!saved) {

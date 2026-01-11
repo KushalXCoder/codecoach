@@ -19,11 +19,11 @@ export const syncQuestions = async (
     });
 }
 
-export const updateQuestionDB = async (codeforcesId: string, updatedTodaysQuestions: QuestionsData[]) => {
+export const updateQuestionDB = async (codeforcesId: string, updatedTodaysQuestions: QuestionsData[], solvedQuestionsTags: string[]) => {
     try {
         const res = await fetch('/api/user/update-questions', {
             method: 'PUT',
-            body: JSON.stringify({ codeforcesId, updatedTodaysQuestions }),
+            body: JSON.stringify({ codeforcesId, updatedTodaysQuestions, solvedQuestionsTags }),
         });
 
         const data = await res.json();
