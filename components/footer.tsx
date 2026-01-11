@@ -1,12 +1,38 @@
+import { Link2 } from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
     return (
-        <footer className="w-full py-5 font-sans">
-            <div className="max-w-5xl mx-auto flex items-center text-white">
-                <p>Made with ❤️ by {""}
-                    <Link href="https://kushalxcoder.vercel.app" target="_blank" className="font-semibold text-primary">TheCodster</Link>
-                </p>
+        <footer className="w-full py-5 font-sans text-white mt-15">
+            <div className="max-w-5xl mx-auto">
+                <div className="flex justify-between">
+                    <div className="flex flex-col">
+                        <h1 className="text-lg text-primary">CodeCoach</h1>
+                        <p className="max-w-md text-gray-400 text-sm mt-2">An <span className="text-blue-500">open source</span> platform for improving your coding skills. Why solve random, irrelevant problems when you can focus on what matters?</p>
+                    </div>
+                    <div className="flex flex-col">
+                        <h1 className="text-lg">Product</h1>
+                        <div className="flex flex-col text-gray-500 mt-1">
+                            <Link href="/" className="hover:underline">LinkedIn</Link>
+                            <Link href="/about" className="hover:underline">GitHub</Link>
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <h1 className="text-lg">Useful Links</h1>
+                        <div className="flex flex-col text-gray-500 mt-1">
+                            <Link href="/" className="hover:underline">Home</Link>
+                            <Link href="/problems" className="hover:underline">Problems</Link>
+                            <Link href="/profile" className="hover:underline">Profile</Link>
+                        </div>
+                    </div>
+                </div>
+                <div className="h-[0.5px] w-full bg-gray-500 my-3" />
+                <div className="flex justify-between items-center text-gray-500 text-sm">
+                    <p>&copy; 2026 CodeCoach. All rights reserved.</p>
+                    <p>Created by {""}
+                        <Link href="https://kushalxcoder.vercel.app" className="text-primary underline">TheCodster</Link>
+                    </p>
+                </div>
             </div>
         </footer>
     )
