@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { profileStore } from '@/store/profile.store';
 import userStore from '@/store/user.store';
 import { useSearchParams } from 'next/navigation';
@@ -19,14 +19,17 @@ type FormDetails = {
 
 const LoginForm = () => {
   const error = useSearchParams().get('error');
-  
-  if(error) {
-    toast(error === 'missing' ? "Email or Password is missing"
-        : error === 'invalid' ? "Invalid Email or Password"
-        : error === 'server' ? "Internal Server Error"
-        : "An unknown error occurred"
-    );
-  };
+
+  useEffect(() => {
+    if(error) {
+      toast(error === 'missing' ? "Email or Password is missing"
+          : error === 'invalid' ? "Invalid Email or Password"
+          : error === 'server' ? "Internal Server Error"
+          : "An unknown error occurred"
+      );
+      setLoading(false);
+    };
+  }, [error]);
 
   const initialErrors = {
     errorElement: "",
@@ -42,9 +45,6 @@ const LoginForm = () => {
   const [formDetails, setFormDetails] = useState<FormDetails>(initialFormDetails);
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const { setProfileCompleted } = userStore();
-  const { hydrateFromServer } = profileStore();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrors(initialErrors);
     setFormDetails({
@@ -53,39 +53,6 @@ const LoginForm = () => {
     });
   };
 
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-
-//     setLoading(true);
-
-//     if(!formDetails.email) {
-//         setErrors({ errorElement: "email", errorMessage: "Email is missing" });
-//         setLoading(false);
-//         return;
-//     } else if(!formDetails.password) {
-//         setErrors({ errorElement: "password", errorMessage: "Password is missing" });
-//         setLoading(false);
-//         return;
-//     }
-
-//     try {
-//         const res = await fetch('/api/auth/login', {
-//             method: "POST",
-//             body: JSON.stringify(formDetails),
-//         });
-
-//         // const data = await res.json();
-//         // if(!res.ok) {
-//         //     throw new Error("Failed to login");
-//         // }
-
-//         // hydrateFromServer(data.tokenData.data.profileData);
-//         setProfileCompleted(true);
-//     } catch (error) {
-//         console.error("Failed login attempt", error);
-//         setLoading(false);
-//     }
-//   }
   const handleSubmit = () => {
     setLoading(true);
   }

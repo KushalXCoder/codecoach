@@ -49,11 +49,11 @@ export const POST = async (req: NextRequest) => {
         }
 
         return NextResponse.redirect(
-            new URL("/auth/login?error=exists", req.url)
+            new URL("/auth/register?error=exists", req.url)
         );
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/auth/login?error=server", req.url)
+            new URL("/auth/register?error=server", req.url)
         );
     }
 }

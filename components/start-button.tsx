@@ -9,7 +9,7 @@ const StartButton = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
 
-    const { data: user, refetch } = useQuery({
+    const { data: user, isError, refetch } = useQuery({
         queryKey: ["me"],
         queryFn: fetchMe,
         enabled: false,
@@ -26,6 +26,10 @@ const StartButton = () => {
             } else {
                 router.push('/problems');
             }
+        }
+
+        if(isError) {
+            router.push('/auth/login');
         }
     }
 

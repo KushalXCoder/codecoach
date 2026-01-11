@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -17,15 +17,17 @@ type Errors = {
 
 const RegisterForm = () => {
   const error = useSearchParams().get('error');
-  
-  if(error) {
-    toast(error === 'missing' ? "Email or Password is missing"
-        : error === 'invalid' ? "Invalid Email or Password"
-        : error === 'server' ? "Internal Server Error"
-        : error === 'exists' ? "User already exists"
-        : "An unknown error occurred"
-    );
-  };
+
+  useEffect(() => {
+    if(error) {
+      toast(error === 'missing' ? "Email or Password is missing"
+          : error === 'invalid' ? "Invalid Email or Password"
+          : error === 'server' ? "Internal Server Error"
+          : error === 'exists' ? "User already exists"
+          : "An unknown error occurred"
+      );
+    };
+  }, [error]);
 
   const initialErrors = {
     errorElement: "",
@@ -47,49 +49,6 @@ const RegisterForm = () => {
         [e.target.name]: e.target.value,
     });
   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     setLoading(true);
-
-//     if(!formDetails.email) {
-//         setErrors({
-//             errorElement: "email",
-//             errorMessage: "Email is required",
-//         });
-//         setLoading(false);
-//         return;
-//     } else if(!formDetails.password) {
-//         setErrors({
-//             errorElement: "password",
-//             errorMessage: "Password is required",
-//         });
-//         setLoading(false);
-//         return;
-//     } else {
-//         try {
-//             setErrors(initialErrors);
-
-//             const res = await fetch('/api/auth/register', {
-//                 method: "POST",
-//                 body: JSON.stringify(formDetails),
-//             });
-
-//             // if(res) {
-//             //     const data = await res.json();
-//             //     if(data.status === "Success") {
-//             //         router.push('/profile-setup');
-//             //     } else if(data.status === "Exists") {
-//             //         router.push('/auth/login');
-//             //     }
-//             // }
-//         } catch (error) {
-//             console.error("Error submitting form:", error);
-//             setLoading(false);
-//         }
-//     }
-//   };
 
   const handleSubmit = () => {
     setLoading(true);
