@@ -65,10 +65,22 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         const user = await Questions.findOne({ codeforcesId });
         if(!user) {
-            console.error("User not found for storing today's questions:", codeforcesId);
+            console.error("User not found", codeforcesId);
             return NextResponse.json({ message: "User not found for storing today's questions" }, { status: 404 });
         }
 
+        // Update user's streak
+        let cnt = 0;
+
+        user.todaysQuestions.forEach((q: QuestionsData) => {
+            if(q.solved) cnt++;
+        });
+
+        if(cnt == dailyLimit) {
+            user.streak += 1;
+        }
+
+        // Update today's questions and overall questions
         user.todaysQuestions = parsed.selected;
         user.questions = [...user.questions, ...parsed.selected];
 

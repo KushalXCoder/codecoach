@@ -16,7 +16,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/profile-header";
 import { useQuery } from "@tanstack/react-query";
-import { userPrevQuestions } from "@/services/user.service";
 import { profileStore } from "@/store/profile.store";
 import Loader from "@/components/loader";
 import Logout from "@/components/logout";
@@ -101,7 +100,7 @@ const ProfilePage = () => {
                                     </TooltipContent>
                                 </Tooltip>
                             </div>
-                            <h2 className="text-3xl font-semibold text-primary">5 days 🔥</h2>
+                            <h2 className="text-3xl font-semibold text-primary">{data?.profileData.streak} days 🔥</h2>
                         </CardContent>
                     </Card>
                 </div>

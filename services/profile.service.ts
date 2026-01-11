@@ -6,6 +6,7 @@ type ProfileDataType = {
     solvedQuestions: number,
     questions: QuestionsData[],
     todaysQuestions: QuestionsData[],
+    streak: number,
 }
 
 type ProfileDataResponse = {

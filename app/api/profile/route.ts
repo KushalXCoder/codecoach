@@ -1,3 +1,4 @@
+import connectDB from "@/lib/provider/connectDb";
 import { Questions } from "@/models/questions.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,6 +9,8 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ message: "Codeforces ID is required" }, { status: 400 });
         }
 
+        await connectDB();
+
         const profileData = await Questions.findOne({ codeforcesId });
         if(!profileData) {
             return NextResponse.json({ message: "Profile data not found" }, { status: 404 });
@@ -16,6 +19,6 @@ export const POST = async (req: NextRequest) => {
         return NextResponse.json({ message: "Successfully found the profileData", profileData }, { status: 200 });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ message: "Internal Server Error", error }, { status: 500 });
     }
 }
