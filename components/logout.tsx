@@ -1,6 +1,6 @@
 import { userLogout } from "@/services/user.service"
 import { Button } from "./ui/button"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner";
 import { profileStore } from "@/store/profile.store";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ type LogoutProps = {
 
 const Logout = ({ className } : LogoutProps) => {
     const router = useRouter();
+
     const { reset: questionsReset } = problemsStore();
     const { reset: profileReset } = profileStore();
 

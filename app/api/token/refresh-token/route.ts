@@ -35,7 +35,6 @@
 
     cookieStore.set("token", newToken, {
       httpOnly: true,
-      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
     });

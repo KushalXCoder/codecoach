@@ -24,6 +24,8 @@ export const getFinalSelectedProblems = async ({ codeforcesId, rating, dailyLimi
             throw new Error(data.message || "Failed to fetch AI selected problems");
         }
 
+        console.log('Data', data);
+
         return { success: true, selectedProblems: data.selectedProblems };
     } catch (error: any) {
         console.error("Error fetching AI selected problems:", error);

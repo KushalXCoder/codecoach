@@ -44,9 +44,10 @@ const DashboardPage = () => {
     leveledQuestions.high.length;
 
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestionsLength > 0;
+  console.log('Enable AI Questions:', enableAiQuestions);
   
   const { data: selectedQuestions, isError: selectedQuestionsError } = useQuery({
-    queryKey: ['questions'],
+    queryKey: ['questions', codeforcesId],
     queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
   });

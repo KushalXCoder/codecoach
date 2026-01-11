@@ -1,4 +1,3 @@
-import { profile } from 'console';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 

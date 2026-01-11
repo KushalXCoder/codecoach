@@ -6,14 +6,13 @@ import { toast } from "sonner";
 
 const Settings = () => {
     const { codeforcesId, rating, dailyLimit, updatedChanges, setUpdatedChanges } = profileStore();
-    console.log("Updated Changes:", updatedChanges);
 
     const handleSave = async () => {
         if(updatedChanges.rating === rating && updatedChanges.dailyLimit === dailyLimit) {
             toast.error("No changes to save");
             return;
         }
-        
+
         const saveRes = await saveUserChanges(codeforcesId, updatedChanges);
 
         if(!saveRes.success) {
@@ -23,6 +22,7 @@ const Settings = () => {
 
         toast.success(saveRes.message || "Changes saved successfully");
     }
+    
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

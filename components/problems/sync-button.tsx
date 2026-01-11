@@ -7,7 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserSubmissions } from "@/services/user.service";
 import { useEffect, useState } from "react";
 import { problemsStore } from "@/store/problems.store";
-import { syncQuestions } from "@/services/questions.service";
+import { syncQuestions, updateQuestionDB } from "@/services/questions.service";
+import Loader from "../loader";
 
 type SyncButtonProps = {
     codeforcesId: string,
@@ -16,7 +17,6 @@ type SyncButtonProps = {
 };
 
 const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => {
-    const [count, setCnt] = useState<number>(0);
     const { setTodaysQuestions } = problemsStore();
     const [userSubmissionsSet, setUserSubmissionsSet] = useState<Set<string>>(new Set());
 
@@ -54,7 +54,6 @@ const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => 
 
         const updatedTodaysQuestions = questions.map((question) => {
             if(userSubmissionsSet.has(question.name)) {
-                setCnt((prev) => prev + 1);
                 return { ...question, solved: true };
             }
             return question;
@@ -63,18 +62,32 @@ const SyncButton = ({ codeforcesId, questions, tabValue } : SyncButtonProps) => 
         // Immedietly send to the store, so that UI updates
         setTodaysQuestions(updatedTodaysQuestions);
 
-        // Fire and Forget to the backend
-        syncQuestions(codeforcesId, updatedTodaysQuestions)
-        .then(() => {
-            toast('Questions synced in the background successfully.');
-        })
-        .catch((err) => {
-            toast(err.message ||'Failed to sync questions in the background.');
-        })
+        (async () => {
+            const res = await updateQuestionDB(codeforcesId, updatedTodaysQuestions);
+
+            if(!res.success) {
+                toast.error(res.message || 'Failed to update questions in DB.');
+            }
+
+            else {
+                // Fire and Forget to the backend
+                syncQuestions(codeforcesId, updatedTodaysQuestions)
+                .then((data) => {
+                    toast(data.message || 'Questions synced in the background successfully.');
+                })
+                .catch((err) => {
+                    toast(err.message ||'Failed to sync questions in the background.');
+                });
+            }
+        })();
     },[userSubmissionsSet, questions, setTodaysQuestions]);
 
+    if(!questions || questions.length === 0) {
+        return <Loader />;
+    }
+
     return (
-        <Button onClick={handleSync} disabled={!questions || questions.length === 0 || isLoading || isRefetching}>
+        <Button onClick={handleSync} disabled={!questions || isLoading || isRefetching}className="cursor-pointer">
             {isLoading || isRefetching ? 'Syncing...' : 'Sync Submissions'}
         </Button>
     )
