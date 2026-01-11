@@ -3,7 +3,7 @@
 import { profileStore } from "@/store/profile.store";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export const fetchMe = async () => {
     const res = await fetch("/api/me", {
@@ -21,6 +21,7 @@ export const fetchMe = async () => {
 export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
     const { setCodeforcesId, setRating, setDailyLimit, setExperiencedTopics, setImproveTopics } = profileStore();
     const router = useRouter();
+    const pathname = usePathname();
 
     const { data: user, isError } = useQuery({
         queryKey: ["me"],
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
     });
 
     useEffect(() => {
-        if(user) {
+        if(user && pathname !== '/') {
             const data = user.user.data;
             
             if(!data.setupCompleted) {
