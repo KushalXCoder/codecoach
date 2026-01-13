@@ -129,6 +129,8 @@ export const getUserSubmissions = async (codeforcesId: string) => {
             throw new Error(data.message || "Failed to fetch user submissions");
         }
 
+        console.log("Fetched user submissions:", data);
+
         return { success: true, submissions: data.submissions };
     } catch (error: any) {
         console.error("Failed to fetch user submissions:", error);

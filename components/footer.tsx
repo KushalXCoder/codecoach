@@ -1,5 +1,6 @@
-import { Link2 } from "lucide-react";
+import { Link2, Star } from "lucide-react";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 const Footer = () => {
     return (
@@ -9,12 +10,16 @@ const Footer = () => {
                     <div className="flex flex-col">
                         <h1 className="text-lg text-primary">CodeCoach</h1>
                         <p className="max-w-md text-gray-400 text-sm mt-2">An <span className="text-blue-500">open source</span> platform for improving your coding skills. Why solve random, irrelevant problems when you can focus on what matters?</p>
+                        <Link href="https://github.com/KushalXCoder/codecoach" target="_blank">
+                            <Button className="bg-gray-500 text-white w-fit mt-2 group cursor-pointer">
+                                <Star className="group-hover:fill-white" /> Give us a star
+                            </Button>
+                        </Link>
                     </div>
                     <div className="flex flex-col">
                         <h1 className="text-lg">Product</h1>
                         <div className="flex flex-col text-gray-500 mt-1">
-                            <Link href="/" className="hover:underline">LinkedIn</Link>
-                            <Link href="/about" className="hover:underline">GitHub</Link>
+                            <Link href="https://github.com/KushalXCoder/codecoach" target="_blank" className="hover:underline">GitHub</Link>
                         </div>
                     </div>
                     <div className="flex flex-col">

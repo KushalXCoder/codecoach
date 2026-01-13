@@ -21,9 +21,14 @@ const PastQuestions = () => {
 
     return (
         <div className='flex flex-col gap-3 my-5'>
-            {pastQuestions && pastQuestions.data.map((question: QuestionsData) => (
-                <ProblemBox question={question} />
-            ))}
+            {pastQuestions && pastQuestions.data.length > 0 ? (
+                    pastQuestions.data.map((question: QuestionsData) => (
+                        <ProblemBox question={question} />
+                    ))
+                ) : (
+                    <p className="text-gray-400">No past questions found.</p>
+                )
+            }
         </div>
     )
 }

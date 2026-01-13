@@ -6,6 +6,8 @@ import connectDB from '@/lib/provider/connectDb';
 import { Questions } from '@/models/questions.model';
 import { FetchedQuestionsData, QuestionsData } from '@/lib/types/global.types';
 import User from '@/models/user.model';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const client = new Mistral({ apiKey: apiKey });
@@ -44,6 +46,8 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
             console.error("User or Questions not found", codeforcesId);
             return NextResponse.json({ message: "User or Questions not found for storing today's questions" }, { status: 404 });
         }
+
+        console.log(userQuestions);
 
         // Flag to check if settings were updated
         let flag = false;
@@ -100,24 +104,54 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         // Update user's streak
         let cnt = 0;
+        let streak = userQuestions.streak || 0;
 
         userQuestions.todaysQuestions.forEach((q: QuestionsData) => {
             if(q.solved) cnt++;
         });
 
         if(cnt == dailyLimit) {
-            user.streak += 1;
+            streak++;
         }
 
         // Update today's questions and overall questions
-        userQuestions.todaysQuestions = parsed.selected;
-        userQuestions.questions = [...userQuestions.questions, ...parsed.selected];
+        await Questions.updateOne(
+            { codeforcesId },
+            { 
+                $set: { todaysQuestions: parsed.selected, streak: streak },
+                $push: { questions: { $each: parsed.selected }},
+            }
+        );
 
         // Update the rating and daily limit if settings were updated
         if(flag) {
             user.rating = rating;
             user.dailyLimit = dailyLimit;
             user.updatedSettings = null;
+
+            // Update the token
+            const payload = {
+                data: {
+                    email: user.email,
+                    setupCompleted: true,
+                    profileData: {
+                        codeforcesId: user.codeforcesId,
+                        rating: rating,
+                        dailyLimit: dailyLimit,
+                        experiencedTopics: user.experiencedTopics,
+                        improveTopics: user.improveTopics,
+                    }
+                }
+            }
+
+            const newToken = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '7d' });
+
+            const cookieStore = await cookies();
+            cookieStore.set('token', newToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+            });
         }
 
         await user.save();

@@ -22,7 +22,7 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster className="font-sans" />
+      <Toaster />
     </QueryClientProvider>
   );
 }

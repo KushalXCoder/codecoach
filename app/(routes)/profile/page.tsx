@@ -34,6 +34,8 @@ type DifficultyData = RatingData & {
   color: string;
 };
 
+const CHART_CARD_HEIGHT = "h-[360px]";
+
 const ProfilePage = () => {
   const { hydrated, codeforcesId } = profileStore();
 
@@ -68,7 +70,6 @@ const ProfilePage = () => {
     });
   }, [data]);
 
-  // ✅ Prepare PieChart data (display only)
   useEffect(() => {
     setDifficultyData([
       { type: "easy", value: ratingData[0].value, color: "#22c55e" },
@@ -77,6 +78,9 @@ const ProfilePage = () => {
       { type: "expert", value: ratingData[3].value, color: "#3b82f6" },
     ]);
   }, [ratingData]);
+
+  const totalSolved = ratingData.reduce((sum, item) => sum + item.value, 0);
+  const hasSolvedAny = totalSolved > 0;
 
   if (!hydrated || isLoading) {
     return (
@@ -118,7 +122,8 @@ const ProfilePage = () => {
             <CardContent className="p-5">
               <p className="text-gray-400 text-sm">Total Problems</p>
               <h2 className="text-3xl font-semibold text-primary">
-                {data?.profileData.questions.length}
+                {(data?.profileData.questions.length ?? 0) +
+                  (data?.profileData.todaysQuestions.length ?? 0)}
               </h2>
             </CardContent>
           </Card>
@@ -140,7 +145,7 @@ const ProfilePage = () => {
                 </Tooltip>
               </div>
               <h2 className="text-3xl font-semibold text-primary">
-                {data?.profileData.streak} days 🔥
+                {data?.profileData.streak} days 🙂
               </h2>
             </CardContent>
           </Card>
@@ -148,72 +153,94 @@ const ProfilePage = () => {
 
         {/* Charts */}
         <div>
-            <h1 className="text-white font-semibold text-lg">
-                Problem Solving Statistics
-            </h1>
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
-                <h1>({" "}Easy - 800-1000,</h1>
-                <h1>Medium - 1000-1200,</h1>
-                <h1>Hard - 1200-1400,</h1>
-                <h1>Expert - 1400+{" "})</h1>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Pie Chart */}
-            <Card className="bg-accent-foreground py-6 justify-center h-fit">
-                <CardContent className="px-6">
-                    <h3 className="text-white mb-4">Solved by Difficulty</h3>
-                    <ResponsiveContainer width="100%" height={260}>
-                        <PieChart>
-                            <Pie
-                                data={difficultyData}
-                                dataKey="value"
-                                nameKey="type"
-                                innerRadius={60}
-                                outerRadius={90}
-                                paddingAngle={5}
-                            >
-                                {difficultyData.map((entry, index) => (
-                                <Cell key={index} fill={entry.color} />
-                                ))}
-                            </Pie>
-                            <RechartsTooltip />
-                        </PieChart>
-                    </ResponsiveContainer>
+          <h1 className="text-white font-semibold text-lg">
+            Problem Solving Statistics
+          </h1>
+          <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
+            <h1>( Easy - 800-1000,</h1>
+            <h1>Medium - 1000-1200,</h1>
+            <h1>Hard - 1200-1400,</h1>
+            <h1>Expert - 1400+ )</h1>
+          </div>
 
-                    {/* ✅ Pie color legend */}
-                    <div className="mt-4 flex flex-wrap gap-4 justify-center text-sm text-gray-400">
-                        {difficultyData.map((item) => (
-                        <div key={item.type} className="flex items-center gap-2">
-                            <span
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                            />
-                            <span className="capitalize">{item.type}</span>
-                        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Pie Chart */}
+            <Card className={`bg-accent-foreground py-6 ${CHART_CARD_HEIGHT}`}>
+              <CardContent className="px-6 flex flex-col h-full">
+                <h3 className="text-white mb-4">Solved by Difficulty</h3>
+
+                {hasSolvedAny ? (
+                  <ResponsiveContainer width="100%" height={260}>
+                    <PieChart>
+                      <Pie
+                        data={difficultyData}
+                        dataKey="value"
+                        nameKey="type"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={5}
+                      >
+                        {difficultyData.map((entry, index) => (
+                          <Cell key={index} fill={entry.color} />
                         ))}
-                    </div>
-                </CardContent>
+                      </Pie>
+                      <RechartsTooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-sm">
+                    <p className="font-medium text-white">
+                      No problems solved yet
+                    </p>
+                    <p>Solve your first problem to see stats here.</p>
+                  </div>
+                )}
+
+                {hasSolvedAny && (
+                  <div className="mt-4 flex flex-wrap gap-4 justify-center text-sm text-gray-400">
+                    {difficultyData.map((item) => (
+                      <div key={item.type} className="flex items-center gap-2">
+                        <span
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span className="capitalize">{item.type}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
             </Card>
 
             {/* Bar Chart */}
-            <Card className="bg-accent-foreground py-6 h-fit">
-                <CardContent className="px-6">
+            <Card className={`bg-accent-foreground py-6 ${CHART_CARD_HEIGHT}`}>
+              <CardContent className="px-6 flex flex-col h-full">
                 <h3 className="text-white mb-4">Solved by Rating</h3>
-                <ResponsiveContainer width="100%" height={298}>
+
+                {hasSolvedAny ? (
+                  <ResponsiveContainer width="100%" height={260}>
                     <BarChart data={ratingData}>
-                    <XAxis dataKey="type" stroke="#9ca3af" />
-                    <YAxis stroke="#9ca3af" />
-                    <RechartsTooltip />
-                    <Bar
+                      <XAxis dataKey="type" stroke="#9ca3af" />
+                      <YAxis stroke="#9ca3af" />
+                      <RechartsTooltip />
+                      <Bar
                         dataKey="value"
                         fill="#22c55e"
                         radius={[6, 6, 0, 0]}
-                    />
+                      />
                     </BarChart>
-                </ResponsiveContainer>
-                </CardContent>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-sm">
+                    <p className="font-medium text-white">
+                      No rating data yet
+                    </p>
+                    <p className="text-center">Your progress will appear once you solve problems.</p>
+                  </div>
+                )}
+              </CardContent>
             </Card>
-            </div>
+          </div>
         </div>
 
         {/* User settings */}

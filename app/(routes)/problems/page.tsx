@@ -107,7 +107,12 @@ const DashboardPage = () => {
                   >
                     {visibleCnt === 10 ? 'Show less' : 'Load More'}
                   </button>
-                  <p className='text-gray-500'>That's not it, you got more questions down!</p>
+                  <p className='text-gray-500'>
+                    {visibleCnt === 10 ? 
+                      'You are viewing all problems for today!'
+                      : 'You can load more problems to solve today!'
+                    }
+                  </p>
                 </div>
               ) : (
                 <p className='text-gray-500 text-end'>Solve this all and you are done for the day!</p>

@@ -2,7 +2,6 @@
 
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { QuestionsData } from "@/lib/types/global.types";
 import { useQuery } from "@tanstack/react-query";
 import { getUserSubmissions } from "@/services/user.service";
 import { useEffect, useState } from "react";
@@ -30,7 +29,16 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
             toast('Sync is only available for today\'s problems.');
             return;
         }
-        await refetch();
+
+        const res = await refetch();
+
+        if(res.data &&
+           res.data.submissions &&
+           res.data.submissions.length === 0
+        ) {
+            toast('You haven\'t made any submissions yet.');
+            return;
+        }
     }
 
     useEffect(() => {
@@ -45,8 +53,12 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
             };
         });
 
+        console.log("User submissions set updated:", newSet);
+
         setUserSubmissionsSet(newSet);
     }, [userSubmissions]);
+
+    console.log("I am here");
 
     useEffect(() => {
         if(!todaysQuestions || userSubmissionsSet.size === 0) return;
@@ -65,6 +77,7 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
         });
 
         if(!hasChanges) {
+            console.log("No new solved questions to sync.");
             toast('No new solved questions to sync.');
             return;
         }
@@ -74,6 +87,7 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
 
         // Return if no new solved questions
         if(solvedQuestionsTags.length === 0) {
+            console.log("No new solved questions to sync.");
             toast('No new solved questions to sync.');
             return;
         }

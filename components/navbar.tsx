@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
-  const pathname = usePathname();
-
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Problems', href: '/problems' },
@@ -23,7 +21,7 @@ const Navbar = () => {
                   <Link
                       key={index}
                       href={link.href}
-                      className={`${pathname.split('/')[2] === link.href.split('/')[1] ? `text-primary` : ``}`}
+                      className="hover:text-blue-500"
                   >
                       {link.name}
                   </Link>

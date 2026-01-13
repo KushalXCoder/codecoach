@@ -30,7 +30,7 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
     });
 
     useEffect(() => {
-        if(user && pathname !== '/') {
+        if(user) {
             const data = user.user.data;
             
             if(!data.setupCompleted) {
