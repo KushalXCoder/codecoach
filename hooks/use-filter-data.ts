@@ -5,7 +5,7 @@ import { topicToCFTags } from "@/lib/helper/topicToTags";
 import { getQuestions, saveProblems, userPrevQuestions } from "@/services/user.service";
 import { problemsStore } from "@/store/problems.store";
 import { profileStore } from "@/store/profile.store";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 export const normalize = (s: string) => {
     return s.toLowerCase().replace(/[^a-z ]/g, "").trim();
@@ -13,13 +13,19 @@ export const normalize = (s: string) => {
 
 export const useFilterData = () => {
     const { hydrated: problemsHydrated, leveledQuestions, setLeveledQuestions } = problemsStore();
-    const { codeforcesId, rating, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
+    const { codeforcesId, rating, updatedSettings, hydrated: profileHydrated, improveTopics, experiencedTopics } = profileStore();
 
     const [isError, setIsError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const ratingLow = rating! - 300;
-    const ratingHigh = rating! + 300;
+    const userRating = updatedSettings.rating ? updatedSettings.rating : rating;
+
+    console.log('rating', userRating);
+
+    const ratingLow = userRating! - 300;
+    const ratingHigh = userRating! + 300;
+
+    console.log(ratingLow, ratingHigh);
 
     const normalizedImproveTopics = improveTopics.flatMap(topic => 
         topicToCFTags[normalize(topic)] ?? []
@@ -31,7 +37,7 @@ export const useFilterData = () => {
 
     const score = (p: QuestionsData) => {
         const difficultyScore = Math.exp(
-            -Math.pow(p.rating! - rating!, 2) / (2 * 200 * 200)
+            -Math.pow(p.rating! - userRating!, 2) / (2 * 200 * 200)
         );
 
         let topicScore = 0.3;
@@ -54,10 +60,10 @@ export const useFilterData = () => {
             leveledQuestions.mid.length > 0 ||
             leveledQuestions.high.length > 0;
 
-        if (hasQuestions) {
-            if (loading) setLoading(false);
-            return;
-        }
+        // if (hasQuestions) {
+        //     if (loading) setLoading(false);
+        //     return;
+        // }
 
         const run = async () => {
             // Stage 1: Fetch questions within the rating range
@@ -111,9 +117,9 @@ export const useFilterData = () => {
             });
 
             const questions = {
-                low: unsolvedFitered.filter(p => p.problem.rating < rating!),
-                mid: unsolvedFitered.filter(p => p.problem.rating === rating!),
-                high: unsolvedFitered.filter(p => p.problem.rating > rating!),
+                low: unsolvedFitered.filter(p => p.problem.rating < userRating!),
+                mid: unsolvedFitered.filter(p => p.problem.rating === userRating!),
+                high: unsolvedFitered.filter(p => p.problem.rating > userRating!),
             };
 
             setLeveledQuestions(questions);

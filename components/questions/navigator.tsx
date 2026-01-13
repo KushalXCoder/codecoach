@@ -64,6 +64,7 @@ const Navigator = ({ className } : NavigatorProps) => {
                 queryFn: fetchMe,
             });
 
+            console.log("Fresh Data:", freshData.user.data);
             hydrateFromServer(freshData.user.data.profileData);
 
             // Store to the DB that setup is completed

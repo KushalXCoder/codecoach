@@ -48,9 +48,12 @@ export const POST = async (req: NextRequest) => {
                     rating: user.rating,
                     improveTopics: user.improveTopics,
                     experiencedTopics: user.experiencedTopics,
+                    updatedSettings: user.updatedSettings,
                 }
             }
         }
+
+        console.log("Token Data:", tokenData);
 
         // Sign the token using JWT
         const token = jwt.sign(tokenData, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });

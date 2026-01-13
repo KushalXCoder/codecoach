@@ -28,6 +28,8 @@ const AuthCallbackPage = () => {
         
         // Update the global state with user profile information
         setProfileCompleted(user.setupCompleted);
+
+        console.log(user.profileData);
         hydrateFromServer(user.profileData);
 
         if(user.setupCompleted) {

@@ -1,21 +1,22 @@
+import { ProfileData } from "@/lib/types/global.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-type ProfileStore = {
+export type ProfileStore = {
     codeforcesId: string;
     dailyLimit: number | null;
     rating: number | null;
     experiencedTopics: string[];
     improveTopics: string[];
-    updatedChanges: Partial<ProfileStore>;
     hydrated: boolean;
+    updatedSettings: Partial<ProfileData>;
 
     setCodeforcesId: (id: string) => void;
     setDailyLimit: (val: number) => void;
     setRating: (val: number) => void;
     setExperiencedTopics: (topics: string[]) => void;
     setImproveTopics: (topics: string[]) => void;
-    setUpdatedChanges: (changes: Partial<ProfileStore>) => void;
+    setUpdatedSettings: (changes: Partial<ProfileData>) => void;
     setHydrated: (val: boolean) => void;
 
     reset: () => void;
@@ -29,7 +30,7 @@ const initialState = {
     rating: null,
     experiencedTopics: [],
     improveTopics: [],
-    updatedChanges: {},
+    updatedSettings: {},
     hydrated: false,
 };
 
@@ -42,7 +43,7 @@ export const profileStore = create<ProfileStore>()(
         setRating: (val) => set({ rating: val }),
         setExperiencedTopics: (topics) => set({ experiencedTopics: topics }),
         setImproveTopics: (topics) => set({ improveTopics: topics }),
-        setUpdatedChanges: (changes) => set({ updatedChanges: { ...get().updatedChanges, ...changes } }),
+        setUpdatedSettings: (changes) => set({ updatedSettings: changes }),
         setHydrated: (val) => set({ hydrated: val }),
 
         reset: () => set({ ...initialState }),
@@ -84,6 +85,7 @@ export const profileStore = create<ProfileStore>()(
             rating: state.rating,
             experiencedTopics: state.experiencedTopics,
             improveTopics: state.improveTopics,
+            updatedSettings: state.updatedSettings,
             hydrated: state.hydrated,
         }),
         storage: createJSONStorage(() => sessionStorage),

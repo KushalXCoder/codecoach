@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     },
     updatedSettings: {
         type: Object,
-        default: {},
+        default: null,
     }
 });
 

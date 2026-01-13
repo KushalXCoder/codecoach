@@ -5,18 +5,17 @@ import redisClient, { connectRedis } from "@/lib/provider/connectRedis";
 import connectDB from '@/lib/provider/connectDb';
 import { Questions } from '@/models/questions.model';
 import { FetchedQuestionsData, QuestionsData } from '@/lib/types/global.types';
+import User from '@/models/user.model';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const client = new Mistral({ apiKey: apiKey });
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
     try {
-        const { codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } = await req.json();
+        let { codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } = await req.json();
         if(!codeforcesId || !rating || !dailyLimit || !improveTopics || !experiencedTopics || !leveledQuestions) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
-
-        const prompt = await getPrompt(rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions);
 
         // Connect to Redis and check for cached response
         await connectRedis();
@@ -25,10 +24,47 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         const cached = await redisClient.get(redisKey);
 
         if(cached) {
+            console.log("Using cached content");
             return NextResponse.json({ message: "Successfully fetched cached content", selectedProblems: JSON.parse(cached) }, { status: 200 });
         }
 
         // If not cached, call the AI model
+        console.log("Generating new content via AI");
+        
+        // If, updatedSetting is there, use that rating
+        await connectDB();
+
+        // Parallel check both the models for the user
+        const [user, userQuestions] = await Promise.all([
+            User.findOne({ codeforcesId }),
+            Questions.findOne({ codeforcesId }),
+        ]);
+
+        if(!user || !userQuestions) {
+            console.error("User or Questions not found", codeforcesId);
+            return NextResponse.json({ message: "User or Questions not found for storing today's questions" }, { status: 404 });
+        }
+
+        // Flag to check if settings were updated
+        let flag = false;
+
+        if(user.updatedSettings && (user.updatedSettings.rating !== rating || user.updatedSettings.dailyLimit !== dailyLimit)) {
+            // Change the flag, to notify that settings were updated
+            flag = true;
+
+            // Changes the current values
+            rating = user.updatedSettings.rating;
+            dailyLimit = user.updatedSettings.dailyLimit;
+
+            // Store later, when storing today's questions
+        }
+
+        console.log(rating, dailyLimit);
+
+        // Get the prompt
+        const prompt = await getPrompt(rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions);
+
+        // Call the AI model
         const chatResponse = await client.chat.complete({
             model: "devstral-small-latest",
             messages: [{
@@ -60,19 +96,12 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         // Cache in Redis for 24 hours
         await redisClient.set(redisKey, JSON.stringify(parsed.selected), { EX: 24 * 60 * 60 });
 
-        // Store to database
-        await connectDB();
-
-        const user = await Questions.findOne({ codeforcesId });
-        if(!user) {
-            console.error("User not found", codeforcesId);
-            return NextResponse.json({ message: "User not found for storing today's questions" }, { status: 404 });
-        }
+        // Update the database
 
         // Update user's streak
         let cnt = 0;
 
-        user.todaysQuestions.forEach((q: QuestionsData) => {
+        userQuestions.todaysQuestions.forEach((q: QuestionsData) => {
             if(q.solved) cnt++;
         });
 
@@ -81,8 +110,15 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         }
 
         // Update today's questions and overall questions
-        user.todaysQuestions = parsed.selected;
-        user.questions = [...user.questions, ...parsed.selected];
+        userQuestions.todaysQuestions = parsed.selected;
+        userQuestions.questions = [...userQuestions.questions, ...parsed.selected];
+
+        // Update the rating and daily limit if settings were updated
+        if(flag) {
+            user.rating = rating;
+            user.dailyLimit = dailyLimit;
+            user.updatedSettings = null;
+        }
 
         await user.save();
 

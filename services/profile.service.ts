@@ -1,7 +1,7 @@
 import { ProfileData, QuestionsData, RatingType } from "@/lib/types/global.types";
 
 
-type ProfileDataType = {
+export type ProfileDataType = {
     codeforcesId: string,
     solvedQuestions: RatingType[],
     questions: QuestionsData[],
@@ -9,7 +9,7 @@ type ProfileDataType = {
     streak: number,
 }
 
-type ProfileDataResponse = {
+export type ProfileDataResponse = {
     message: string,
     profileData: ProfileDataType,
 };

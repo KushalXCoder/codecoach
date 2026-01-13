@@ -19,7 +19,7 @@ export const fetchMe = async () => {
 };
 
 export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
-    const { setCodeforcesId, setRating, setDailyLimit, setExperiencedTopics, setImproveTopics } = profileStore();
+    const { setCodeforcesId, setRating, setDailyLimit, setExperiencedTopics, setImproveTopics, setUpdatedSettings } = profileStore();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
             setDailyLimit(data.profileData.dailyLimit);
             setImproveTopics(data.profileData.improveTopics);
             setExperiencedTopics(data.profileData.experiencedTopics);
+            setUpdatedSettings(data.profileData.updatedSettings);
         }
     }, [user]);
 

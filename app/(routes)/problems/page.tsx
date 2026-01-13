@@ -25,12 +25,6 @@ const DashboardPage = () => {
 
   const [tabValue, setTabValue] = useState<string>('today');
   const [visibleCnt, setVisibleCnt] = useState<number>(5);
-
-  // const { data: quote, isLoading: isQuoteLoading } = useQuery({
-  //     queryKey: ['quote'],
-  //     queryFn: getQuote,
-  //     staleTime: 24 * 60 * 60 * 1000,
-  // });
   
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
 
@@ -88,7 +82,6 @@ const DashboardPage = () => {
                 >
                   Today
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="past"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -96,7 +89,7 @@ const DashboardPage = () => {
                   Past
                 </TabsTrigger>
               </TabsList>
-              <SyncButton codeforcesId={codeforcesId} questions={selectedQuestions?.selectedProblems} tabValue={tabValue} />
+              <SyncButton codeforcesId={codeforcesId} tabValue={tabValue} />
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>

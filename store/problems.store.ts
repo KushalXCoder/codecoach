@@ -32,6 +32,10 @@ export const problemsStore = create<ProblemsStore>()(
         onRehydrateStorage: () => (state) => {
             state?.setHydrated(true);
         },
+        partialize: (state) => ({
+            leveledQuestions: state.leveledQuestions,
+            hydrated: state.hydrated,
+        }),
         storage: createJSONStorage(() => sessionStorage),
     }),
 );
