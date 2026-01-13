@@ -1,44 +1,54 @@
 # CodeCoach
 
-Personalized coding practice and contest preparation platform with Codeforces integration and AI-powered problem recommendations. Built with Next.js and TypeScript — designed to deploy on Vercel.
+CodeCoach is an open-source, personalized daily practice platform for competitive programmers, focused on building consistent problem-solving habits using Codeforces.
+
+Built with **Next.js** and **TypeScript**, and designed to deploy seamlessly on **Vercel**.
+
+**Why CodeCoach**
+
+Most platforms focus on contests or large problem sets. CodeCoach focuses on **daily consistency**.
+
+Users receive **1–10 carefully selected problems per day**, based on their chosen topics, rating range, and past activity — making practice focused, manageable, and sustainable.
 
 **Highlights**
-- **Personalized practice:** Track solved problems, sync Codeforces data, and receive curated problem suggestions.
-- **Contests:** Create codeforces contest easily using the AI builder. (Coming Soon)
-- **Seamless sync:** Connect Codeforces and persist data for progress tracking.
-- **Modern stack:** Next.js (app router), TypeScript, React, PostCSS, and Redis/DB integrations.
 
-**Demo / Deploy**
-- Vercel: Recommended platform — automatic Next.js optimizations and edge functions.
+- **Daily personalized practice**  
+  Choose topics, rating range, and daily problem count (1–10).
 
-**Table of Contents**
-- **Overview**: What this project does
-- **Features**: Core features
-- **Tech Stack**: Key technologies
-- **Architecture**: High-level structure
-- **Getting Started**: Local setup and environment
-- **Development**: Commands and scripts
-- **Deployment**: Vercel tips
-- **Contributing**: See CONTRIBUTING.md
-- **Code of Conduct**: See CODE_OF_CONDUCT.md
-- **License**n+
-**Overview**
+- **Smart problem selection**  
+  Problems are filtered and scored using custom logic, with AI selecting the final best set.
 
-CodeCoach helps developers practice algorithmic problems more effectively by combining contest tracking, personalized problem recommendations, and AI-driven analysis. It integrates with Codeforces to import user submissions, then surfaces targeted practice material and progress insights.
+- **Progress tracking**  
+  Track solved problems, total solves, and daily streaks.
+
+- **Codeforces integration**  
+  Sync solved problems to maintain accurate practice history.
+
+- **Modern, Vercel-friendly stack**  
+  Next.js (App Router), TypeScript, React, PostCSS, Redis/DB.
+
+**How It Works**
+
+1. User selects preferred topics, rating range, and daily problem limit  
+2. CodeCoach filters and scores Codeforces problems based on relevance  
+3. AI selects the most suitable problems for that day  
+4. User solves problems and builds a daily streak  
 
 **Features**
-- **Sync Codeforces**: Import problem history and submissions.
-- **Personalized queues**: Daily limits, saved topics, and custom goals.
-- **Problem management**: Save problems, view metadata, color-coded difficulty and tags.
-- **Profile analysis**: AI-driven suggestions and historical trends.
-- **API-first**: Server routes for auth, data sync, and AI endpoints.
+
+- Personalized daily problem queue  
+- Codeforces problem sync  
+- Practice history (today & past days)  
+- Solve count and streak tracking  
 
 **Tech Stack**
-- **Framework**: Next.js (app router)
-- **Language**: TypeScript
-- **Styling**: PostCSS / global CSS
-- **Data**: Connectors present for DB and Redis (see provider directory)
-- **Hosting**: Vercel (recommended)
+
+- **Framework:** Next.js (App Router)
+- **Language:** TypeScript
+- **UI:** React
+- **Styling:** PostCSS
+- **Data:** Redis / Database
+- **Deployment:** Vercel
 
 **Architecture & Key Folders**
 - **app/**: Next.js app routes, pages, and layouts
