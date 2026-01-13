@@ -18,7 +18,12 @@ export const useFilterData = () => {
     const [isError, setIsError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const userRating = updatedSettings.rating ? updatedSettings.rating : rating;
+    console.log(updatedSettings);
+
+    if(updatedSettings && updatedSettings.rating) {
+        console.log('Using updated rating:', updatedSettings.rating);
+    }
+    const userRating = updatedSettings && updatedSettings.rating ? updatedSettings.rating : rating;
 
     console.log('rating', userRating);
 

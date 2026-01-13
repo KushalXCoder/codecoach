@@ -47,7 +47,7 @@ const Settings = () => {
                     <label className="text-gray-400 text-sm">Your Rating</label>
                     <Input
                         type="number"
-                        defaultValue={updatedSettings.rating ? updatedSettings.rating : (rating ?? 0)}
+                        defaultValue={updatedSettings && updatedSettings.rating ? updatedSettings.rating : (rating ?? 0)}
                         onChange={(e) => setNewRating(Number(e.target.value))}
                         className="mt-2 text-primary"
                     />
@@ -56,7 +56,7 @@ const Settings = () => {
                     <label className="text-gray-400 text-sm">Daily Problem Limit</label>
                     <Input
                         type="number"
-                        defaultValue={updatedSettings.dailyLimit ? updatedSettings.dailyLimit : (dailyLimit ?? 0)}
+                        defaultValue={updatedSettings &&updatedSettings.dailyLimit ? updatedSettings.dailyLimit : (dailyLimit ?? 0)}
                         onChange={(e) => setNewDailyLimit(Number(e.target.value))}
                         className="mt-2 text-primary"
                     />
