@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!email || !password) {
             return NextResponse.redirect(
-                new URL("/login?error=missing", req.url)
+                new URL("/login?error=missing", req.nextUrl.origin)
             );
         }
 
@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!user) {
             return NextResponse.redirect(
-                new URL("/login?error=invalid", req.url)
+                new URL("/login?error=invalid", req.nextUrl.origin)
             );
         }
 
@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!isPassword) {
             return NextResponse.redirect(
-                new URL("/login?error=invalid", req.url)
+                new URL("/login?error=invalid", req.nextUrl.origin)
             );
         }
 
@@ -59,7 +59,7 @@ export const POST = async (req: NextRequest) => {
         const token = jwt.sign(tokenData, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         
         // const res = NextResponse.json({ message: "Login Successful", tokenData }, { status: 200 });
-        const res = NextResponse.redirect(new URL('/auth/callback', req.url), 303);
+        const res = NextResponse.redirect(new URL('/auth/callback', req.nextUrl.origin), 303);
 
         // Attach cookie with the response
         res.cookies.set('token', token, {
@@ -73,7 +73,7 @@ export const POST = async (req: NextRequest) => {
         
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/login?error=server", req.url)
+            new URL("/login?error=server", req.nextUrl.origin)
         );
     }
 }

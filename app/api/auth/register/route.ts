@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!email || !password) {
             return NextResponse.redirect(
-                new URL("/login?error=missing", req.url)
+                new URL("/login?error=missing", req.nextUrl.origin)
             );
         }
 
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
             });
 
             // const res = NextResponse.json({ message: 'User registered', status: "Success", newUser }, { status: 200 });
-            const res = NextResponse.redirect(new URL('/auth/callback', req.url), 303);
+            const res = NextResponse.redirect(new URL('/auth/callback', req.nextUrl.origin), 303);
 
             const tokenData = {
                 email: newUser.email,
@@ -49,11 +49,11 @@ export const POST = async (req: NextRequest) => {
         }
 
         return NextResponse.redirect(
-            new URL("/register?error=exists", req.url)
+            new URL("/register?error=exists", req.nextUrl.origin)
         );
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/register?error=server", req.url)
+            new URL("/register?error=server", req.nextUrl.origin)
         );
     }
 }
