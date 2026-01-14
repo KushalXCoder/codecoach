@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!email || !password) {
             return NextResponse.redirect(
-                new URL("/auth/login?error=missing", req.url)
+                new URL("/login?error=missing", req.url)
             );
         }
 
@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!user) {
             return NextResponse.redirect(
-                new URL("/auth/login?error=invalid", req.url)
+                new URL("/login?error=invalid", req.url)
             );
         }
 
@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!isPassword) {
             return NextResponse.redirect(
-                new URL("/auth/login?error=invalid", req.url)
+                new URL("/login?error=invalid", req.url)
             );
         }
 
@@ -73,7 +73,7 @@ export const POST = async (req: NextRequest) => {
         
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/auth/login?error=server", req.url)
+            new URL("/login?error=server", req.url)
         );
     }
 }

@@ -26,12 +26,8 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         const cached = await redisClient.get(redisKey);
 
         if(cached) {
-            console.log("Using cached content");
             return NextResponse.json({ message: "Successfully fetched cached content", selectedProblems: JSON.parse(cached) }, { status: 200 });
         }
-
-        // If not cached, call the AI model
-        console.log("Generating new content via AI");
         
         // If, updatedSetting is there, use that rating
         await connectDB();
@@ -43,11 +39,8 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         ]);
 
         if(!user || !userQuestions) {
-            console.error("User or Questions not found", codeforcesId);
             return NextResponse.json({ message: "User or Questions not found for storing today's questions" }, { status: 404 });
         }
-
-        console.log(userQuestions);
 
         // Flag to check if settings were updated
         let flag = false;
@@ -62,8 +55,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
             // Store later, when storing today's questions
         }
-
-        console.log(rating, dailyLimit);
 
         // Get the prompt
         const prompt = await getPrompt(rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions);

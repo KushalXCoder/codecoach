@@ -27,10 +27,6 @@ const DashboardPage = () => {
   const [visibleCnt, setVisibleCnt] = useState<number>(5);
   
   const { leveledQuestions, loading: questionsLoading, isError: questionsError } = useFilterData();
-
-  useEffect(() => {
-    console.log(leveledQuestions);
-  }, [leveledQuestions]);
   
   const leveledQuestionsLength = 
     leveledQuestions.low.length +
@@ -38,7 +34,6 @@ const DashboardPage = () => {
     leveledQuestions.high.length;
 
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestionsLength > 0;
-  console.log('Enable AI Questions:', enableAiQuestions);
   
   const { data: selectedQuestions, isError: selectedQuestionsError } = useQuery({
     queryKey: ['questions', codeforcesId],

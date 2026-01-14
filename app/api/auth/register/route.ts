@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
 
         if(!email || !password) {
             return NextResponse.redirect(
-                new URL("/auth/login?error=missing", req.url)
+                new URL("/login?error=missing", req.url)
             );
         }
 
@@ -49,11 +49,11 @@ export const POST = async (req: NextRequest) => {
         }
 
         return NextResponse.redirect(
-            new URL("/auth/register?error=exists", req.url)
+            new URL("/register?error=exists", req.url)
         );
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/auth/register?error=server", req.url)
+            new URL("/register?error=server", req.url)
         );
     }
 }
