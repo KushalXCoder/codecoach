@@ -13,7 +13,8 @@ export const POST = async (req: NextRequest) => {
 
         if(!email || !password) {
             return NextResponse.redirect(
-                new URL("/auth/login?error=missing", req.nextUrl.origin)
+                new URL("/auth/login?error=missing", req.nextUrl.origin),
+                303
             );
         }
 
@@ -49,11 +50,13 @@ export const POST = async (req: NextRequest) => {
         }
 
         return NextResponse.redirect(
-            new URL("/auth/register?error=exists", req.nextUrl.origin)
+            new URL("/auth/register?error=exists", req.nextUrl.origin),
+            303
         );
     } catch (error) {
         return NextResponse.redirect(
-            new URL("/auth/register?error=server", req.nextUrl.origin)
+            new URL("/auth/register?error=server", req.nextUrl.origin),
+            303
         );
     }
 }
