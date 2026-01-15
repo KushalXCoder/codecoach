@@ -11,6 +11,7 @@ import userStore from "@/store/user.store";
 import { useRouter } from "next/navigation";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { fetchMe } from "@/lib/provider/auth-provider";
+import { checkVerified } from "@/lib/helper/checkVerified";
 
 type NavigatorProps = {
     className?: string,
@@ -27,6 +28,7 @@ const Navigator = ({ className } : NavigatorProps) => {
 
     const handleClick = async () => {
         const result = validateStep(idx);
+        const verified = await checkVerified();
 
         if(!result.valid) {
             toast(result.message || "Please fill the required fields");
@@ -35,6 +37,12 @@ const Navigator = ({ className } : NavigatorProps) => {
         }
         
         if(idx === 1) {
+            if(!verified) {
+                toast("Please verify your Codeforces ID before proceeding");
+                setLoading(false);
+                return;
+            }
+
             const profileData = { codeforcesId, dailyLimit, rating, experiencedTopics, improveTopics };
 
             setLoading(true);
