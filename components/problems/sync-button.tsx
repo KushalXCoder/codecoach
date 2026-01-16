@@ -8,15 +8,20 @@ import { useEffect, useState } from "react";
 import { problemsStore } from "@/store/problems.store";
 import { syncQuestions, updateQuestionDB } from "@/services/questions.service";
 import { RatingToTag } from "@/lib/helper/ratingToTag";
+import CodeforcesInput from "../questions/codeforces-input";
+import CodeforcesDialog from "../codeforces-dialog";
+import { profileStore } from "@/store/profile.store";
+import { checkVerified } from "@/lib/helper/checkVerified";
 
 type SyncButtonProps = {
-    codeforcesId: string,
     tabValue: string,
 };
 
-const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
+const SyncButton = ({ tabValue } : SyncButtonProps) => {
     const { hydrated, todaysQuestions, setTodaysQuestions } = problemsStore();
+    const { codeforcesId } = profileStore();
     const [userSubmissionsSet, setUserSubmissionsSet] = useState<Set<string>>(new Set());
+    const [openInput, setOpenInput] = useState<boolean>(false);
 
     const { data: userSubmissions, isLoading, isRefetching, refetch } = useQuery({
         queryKey: ['userSubmissions'],
@@ -25,19 +30,27 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
     });
 
     const handleSync = async () => {
+        // Check the current tab
         if(tabValue === 'past') {
             toast('Sync is only available for today\'s problems.');
             return;
         }
 
-        const res = await refetch();
-
-        if(res.data &&
-           res.data.submissions &&
-           res.data.submissions.length === 0
-        ) {
-            toast('You haven\'t made any submissions yet.');
+        // Check if Codeforces is synced
+        const isVerified = await checkVerified();
+        if(!isVerified) {
+            setOpenInput((prev) => !prev);
             return;
+        } else {
+            const res = await refetch();
+
+            if(res.data &&
+            res.data.submissions &&
+            res.data.submissions.length === 0
+            ) {
+                toast('You haven\'t made any submissions yet.');
+                return;
+            }
         }
     }
 
@@ -57,8 +70,6 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
 
         setUserSubmissionsSet(newSet);
     }, [userSubmissions]);
-
-    console.log("I am here");
 
     useEffect(() => {
         if(!todaysQuestions || userSubmissionsSet.size === 0) return;
@@ -115,9 +126,12 @@ const SyncButton = ({ codeforcesId, tabValue } : SyncButtonProps) => {
     const isDisabled = !todaysQuestions || todaysQuestions.length === 0 || isLoading || isRefetching || !hydrated;
 
     return (
-        <Button onClick={handleSync} disabled={isDisabled} className="cursor-pointer">
-            {isLoading || isRefetching ? 'Syncing...' : 'Sync Submissions'}
-        </Button>
+        <>
+            <Button onClick={handleSync} disabled={isDisabled} className="cursor-pointer">
+                {isLoading || isRefetching ? 'Syncing...' : 'Sync Submissions'}
+            </Button>
+            {openInput && <CodeforcesDialog open={openInput} onOpenChange={setOpenInput} />}
+        </>
     )
 }
 

@@ -84,7 +84,7 @@ const DashboardPage = () => {
                   Past
                 </TabsTrigger>
               </TabsList>
-              {/* <SyncButton codeforcesId={codeforcesId} tabValue={tabValue} /> */}
+              <SyncButton tabValue={tabValue} />
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>

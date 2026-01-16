@@ -28,14 +28,7 @@ const CodeforcesInput = () => {
         return;
     }
 
-    const isVerified = await checkVerified();
-
-    if(!isVerified) {
-      setCodeforcesId(codeforcesId.trim());
-      setOpenDialog(true);
-    } else {
-      toast("Codeforces ID connected successfully");
-    }
+    setOpenDialog(true);
   }
 
   return (
