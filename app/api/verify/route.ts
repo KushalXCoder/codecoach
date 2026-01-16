@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
 
         const response = NextResponse.json({ message: "Verification successful" }, { status: 200 });
 
-        const token = jwt.sign({ verified: true }, `${process.env.JWT_SECRET}`, { expiresIn: '30d' });
+        const token = jwt.sign({ verified: true, codeforcesId }, `${process.env.JWT_SECRET}`, { expiresIn: '30d' });
         response.cookies.set('verified', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

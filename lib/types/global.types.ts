@@ -81,6 +81,7 @@ export type JWTPayload = {
 
 export type JWTCfPayload = {
     verified: boolean;
+    codeforcesId: string;
 }
 
 export type JWTProfilePayload = {

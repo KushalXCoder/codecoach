@@ -16,7 +16,6 @@ import { QuestionsData } from '@/lib/types/global.types';
 import PastQuestions from '@/components/problems/past-questions';
 import SyncButton from '@/components/problems/sync-button';
 import { problemsStore } from '@/store/problems.store';
-import ColorCode from '@/components/problems/color-code';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
@@ -67,7 +66,6 @@ const DashboardPage = () => {
       {/* <DailyQuote quote={quote!} /> */}
       {profileCompleted ? (
         <div className='flex flex-col flex-1'>
-          <ColorCode />
           <Tabs defaultValue='today' onValueChange={(value) => setTabValue(value)} className='font-sans'>
             <div className='flex justify-between items-center'>
               <TabsList className='bg-white/80 *:px-3'>

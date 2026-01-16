@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { verifyCodeforcesId } from "@/services/user.service";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type VerifyDialogProps = {
@@ -27,7 +30,7 @@ const VerifyDialog = ({ codeforcesId, open, setOpen } : VerifyDialogProps) => {
     if(!res.success) {
         toast(res.message || "Verification failed");
     } else {
-      toast(res.message || "Verification successful");
+      toast(`${res.message}, please refresh the page` || "Verification successful, please refresh the page");
     }
 
     setOpen(false);
@@ -49,7 +52,7 @@ const VerifyDialog = ({ codeforcesId, open, setOpen } : VerifyDialogProps) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Verify</Button>
+            <Button className="cursor-pointer" type="submit">Verify</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -24,6 +24,11 @@ import Settings from "@/components/profile/settings";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { RatingType } from "@/lib/types/global.types";
+import { checkVerified } from "@/lib/helper/checkVerified";
+import { Button } from "@/components/ui/button";
+import { appStore } from "@/store/app.store";
+import { set } from "mongoose";
+import CodeforcesDialog from "@/components/codeforces-dialog";
 
 type RatingData = {
   type: RatingType;
@@ -38,6 +43,7 @@ const CHART_CARD_HEIGHT = "h-[360px]";
 
 const ProfilePage = () => {
   const { hydrated, username } = profileStore();
+  const { openCodeforcesDialog, setOpenCodeforcesDialog } = appStore();
 
   const [ratingData, setRatingData] = useState<RatingData[]>([
     { type: "easy", value: 0 },
@@ -82,6 +88,15 @@ const ProfilePage = () => {
   const totalSolved = ratingData.reduce((sum, item) => sum + item.value, 0);
   const hasSolvedAny = totalSolved > 0;
 
+  const [isUserVerified, setIsUserVerified] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      const isVerified = await checkVerified();
+      setIsUserVerified(isVerified.verified);
+    })();
+  }, []);
+
   if (!hydrated || isLoading) {
     return (
       <div className="h-screen flex justify-center items-center">
@@ -101,9 +116,19 @@ const ProfilePage = () => {
 
       <div className="flex w-full justify-between items-end">
         <p className="text-gray-500">
-          Currently, we just track your CodeCoach stats !
+          {isUserVerified ?
+            "Currently, we just track your CodeCoach stats !" :
+            "Verify your account with codeforces to track your stats !"
+          }
         </p>
-        <Logout className="mt-3 w-1/6" />
+        <div className="flex items-center gap-3">
+          {!isUserVerified && (
+            <Button className="cursor-pointer" onClick={() => setOpenCodeforcesDialog(true)}>
+              Verify
+            </Button>
+          )}
+          <Logout className="w-fit" />
+        </div>
       </div>
 
       <div className="mt-5 space-y-6">
@@ -254,6 +279,8 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {openCodeforcesDialog && <CodeforcesDialog />}
     </div>
   );
 };

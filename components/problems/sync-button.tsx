@@ -12,6 +12,7 @@ import CodeforcesInput from "../questions/codeforces-input";
 import CodeforcesDialog from "../codeforces-dialog";
 import { profileStore } from "@/store/profile.store";
 import { checkVerified } from "@/lib/helper/checkVerified";
+import { appStore } from "@/store/app.store";
 
 type SyncButtonProps = {
     tabValue: string,
@@ -19,9 +20,10 @@ type SyncButtonProps = {
 
 const SyncButton = ({ tabValue } : SyncButtonProps) => {
     const { hydrated, todaysQuestions, setTodaysQuestions } = problemsStore();
-    const { codeforcesId } = profileStore();
+    const { codeforcesId, setCodeforcesId } = profileStore();
+    const { openCodeforcesDialog, setOpenCodeforcesDialog } = appStore();
+
     const [userSubmissionsSet, setUserSubmissionsSet] = useState<Set<string>>(new Set());
-    const [openInput, setOpenInput] = useState<boolean>(false);
 
     const { data: userSubmissions, isLoading, isRefetching, refetch } = useQuery({
         queryKey: ['userSubmissions'],
@@ -37,11 +39,13 @@ const SyncButton = ({ tabValue } : SyncButtonProps) => {
         }
 
         // Check if Codeforces is synced
-        const isVerified = await checkVerified();
-        if(!isVerified) {
-            setOpenInput((prev) => !prev);
+        const val = await checkVerified();
+        if(!val.verified) {
+            setOpenCodeforcesDialog(true);
             return;
         } else {
+            // Set the codeforcesId in the store
+            setCodeforcesId(val.codeforcesId);
             const res = await refetch();
 
             if(res.data &&
@@ -130,7 +134,7 @@ const SyncButton = ({ tabValue } : SyncButtonProps) => {
             <Button onClick={handleSync} disabled={isDisabled} className="cursor-pointer">
                 {isLoading || isRefetching ? 'Syncing...' : 'Sync Submissions'}
             </Button>
-            {openInput && <CodeforcesDialog open={openInput} onOpenChange={setOpenInput} />}
+            {openCodeforcesDialog && <CodeforcesDialog />}
         </>
     )
 }

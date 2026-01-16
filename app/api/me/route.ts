@@ -7,15 +7,16 @@ import { decode } from "punycode";
 export const GET = async () => {
     try {
         const cookieStore = await cookies();
-        const token = cookieStore.get("profile-token")?.value;
 
-        if(!token) {
-            console.log("No token found in cookies");
+        const profileToken = cookieStore.get("profile-token")?.value;
+
+        if(!profileToken) {
+            console.log("No profile token found in cookies");
             return NextResponse.json({ message: "Unauthorized", decoded: null }, { status: 401 });
         }
 
         // const decoded = await checkToken(token);
-        const decoded = await checkProfileToken(token);
+        const decoded = await checkProfileToken(profileToken);
         if(!decoded || decoded === null) {
             console.log("Invalid or expired token");
             return NextResponse.json({ message: "Unauthorized", decoded: null }, { status: 401 });

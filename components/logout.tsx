@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { problemsStore } from "@/store/problems.store";
 
 type LogoutProps = {
-    className: string;
+    className?: string;
 };
 
 const Logout = ({ className } : LogoutProps) => {

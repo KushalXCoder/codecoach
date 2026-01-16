@@ -1,15 +1,13 @@
+"use client";
+
+import { appStore } from "@/store/app.store";
 import CodeforcesInput from "./questions/codeforces-input";
-import { Button } from "./ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 
-type CodeforcesDialogProps = {
-    open: boolean,
-    onOpenChange: (open: boolean) => void,
-}
-
-const CodeforcesDialog = ({ open, onOpenChange }: CodeforcesDialogProps) => {
+const CodeforcesDialog = () => {
+    const { openCodeforcesDialog, setOpenCodeforcesDialog } = appStore();
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={openCodeforcesDialog} onOpenChange={setOpenCodeforcesDialog}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="font-sans">Enter your codeforces Id</DialogTitle>
