@@ -3,18 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (req: NextRequest) => {
     try {
-        const { codeforcesId } = await req.json();
-        if(!codeforcesId) {
-            return NextResponse.json({ message: "Codeforces ID is required" }, { status: 400 });
+        const { username } = await req.json();
+        
+        if(!username) {
+            return NextResponse.json({ message: "username is required" }, { status: 400 });
         }
 
         const user = await User.findOneAndUpdate(
-            { codeforcesId },
+            { username },
             { setupCompleted: true },
             { new: true }
         );
 
         if(!user) {
+            console.error("User not found when marking setup as completed");
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 

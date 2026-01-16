@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const codeforcesId = await req.json();
-        if(!codeforcesId) {
-            return NextResponse.json({ message: "Codeforces ID is required" }, { status: 400 });
+        const username = await req.json();
+        if(!username) {
+            return NextResponse.json({ message: "Username is required" }, { status: 400 });
         }
 
         await connectDB();
 
-        const profileData = await Questions.findOne({ codeforcesId });
+        const profileData = await Questions.findOne({ username });
         if(!profileData) {
             return NextResponse.json({ message: "Profile data not found" }, { status: 404 });
         }

@@ -25,10 +25,10 @@ export const verifyCodeforcesId = async (codeforcesId: string) => {
     }
 }
 
-export const saveData = async (profileData: ProfileData) => {
+export const saveProfile = async (profileData: ProfileData) => {
     try {
-        const res = await fetch('/api/user/save-data', {
-            method: "PUT",
+        const res = await fetch('/api/profile/save-profile', {
+            method: "POST",
             body: JSON.stringify({ profileData }),
         });
 
@@ -79,30 +79,30 @@ export const getQuestions = async ({ ratingLow, ratingHigh} : GetQuestionsProps)
     }
 }
 
-export const saveProblems = async (codeforcesId: string, problems: RankedData[]) => {
-    try {
-        const res = await fetch('/api/user/save-problems', {
-            method: "PUT",
-            body: JSON.stringify({ codeforcesId, problems }),
-        });
+// export const saveProblems = async (codeforcesId: string, problems: RankedData[]) => {
+//     try {
+//         const res = await fetch('/api/user/save-problems', {
+//             method: "PUT",
+//             body: JSON.stringify({ codeforcesId, problems }),
+//         });
 
-        const data = await res.json();
-        if(!res.ok) {
-            throw new Error(data.message || "Failed to save problems");
-        }
+//         const data = await res.json();
+//         if(!res.ok) {
+//             throw new Error(data.message || "Failed to save problems");
+//         }
 
-        return { success: true, message: data.message || "Problems saved successfully" };
-    } catch (error: any) {
-        console.error("Could not save problems:", error);
-        return { success: false, message: error.message || "Failed to save problems" };
-    }
-}
+//         return { success: true, message: data.message || "Problems saved successfully" };
+//     } catch (error: any) {
+//         console.error("Could not save problems:", error);
+//         return { success: false, message: error.message || "Failed to save problems" };
+//     }
+// }
 
-export const userPrevQuestions = async (codeforcesId: string) => {
+export const userPrevQuestions = async (username: string) => {
     try {
         const res = await fetch('/api/user/prev-questions', {
             method: "POST",
-            body: JSON.stringify({ codeforcesId }),
+            body: JSON.stringify({ username }),
         });
 
         const data = await res.json();
@@ -138,11 +138,11 @@ export const getUserSubmissions = async (codeforcesId: string) => {
     }
 }
 
-export const markSetupCompleted = async (codeforcesId: string) => {
+export const markSetupCompleted = async (username: string) => {
     try {
         const res = await fetch('/api/user/completed-setup', {
             method: "PUT",
-            body: JSON.stringify({ codeforcesId }),
+            body: JSON.stringify({ username }),
         });
 
         const data = await res.json();
@@ -157,11 +157,12 @@ export const markSetupCompleted = async (codeforcesId: string) => {
     }
 }
 
-export const saveUserChanges = async (codeforcesId: string, updatedChanges: Partial<ProfileData>) => {
+//
+export const saveUserChanges = async (username: string, updatedChanges: Partial<ProfileData>) => {
     try {
         const res = await fetch('/api/profile/save-changes', {
             method: "PUT",
-            body: JSON.stringify({ codeforcesId, updatedChanges }),
+            body: JSON.stringify({ username, updatedChanges }),
         });
     
         const data = await res.json();
@@ -174,4 +175,17 @@ export const saveUserChanges = async (codeforcesId: string, updatedChanges: Part
         console.error("Failed to save user changes:", error);
         return { success: false, message: error.message || "Failed to save user changes" };
     }
+}
+
+export const fetchProfileToken = async () => {
+    const res = await fetch('/api/profile/token', {
+        'credentials': 'include',
+    });
+
+    const data = await res.json();
+    if(!res.ok) {
+        throw new Error(data.message || "Failed to fetch profile token");
+    }
+
+    return data;
 }

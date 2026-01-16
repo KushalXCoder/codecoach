@@ -1,16 +1,15 @@
 import { LeveledQuestionsData, ProfileData } from "@/lib/types/global.types"
 
 type getFinalSelectedProblemsProps = ProfileData & {
-    codeforcesId?: string,
     leveledQuestions: LeveledQuestionsData,
 };
 
-export const getFinalSelectedProblems = async ({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } : getFinalSelectedProblemsProps) => {
+export const getFinalSelectedProblems = async ({ username, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } : getFinalSelectedProblemsProps) => {
     try {
         const res = await fetch('/api/ai', {
             method: "POST",
             body: JSON.stringify({
-                codeforcesId,
+                username,
                 rating,
                 dailyLimit,
                 improveTopics,

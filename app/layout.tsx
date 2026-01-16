@@ -34,6 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/icon.png" />
+      </head>
       <body className={`${dmSans.variable} ${bitcountGridDouble.variable} ${poppins.variable} bg-black antialiased`}>
         <Script
           src="https://cloud.umami.is/script.js"

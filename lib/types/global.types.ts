@@ -23,6 +23,7 @@ export type AnalyzeData = {
 };
 
 export type ProfileData = {
+    username: string,
     dailyLimit: number | null,
     rating: number | null,
     experiencedTopics: string[],
@@ -61,6 +62,9 @@ export type LeveledQuestionsData = {
     high: RankedData[],
 };
 
+export type RatingType = "easy" | "medium" | "hard" | "expert";
+
+// ------------------------------- JWT Payload Types ---------------------------------
 export type JWTPayload = {
     data: {
         email: string;
@@ -77,6 +81,9 @@ export type JWTPayload = {
 
 export type JWTCfPayload = {
     verified: boolean;
+    codeforcesId: string;
 }
 
-export type RatingType = "easy" | "medium" | "hard" | "expert";
+export type JWTProfilePayload = {
+    profileId: string;
+}

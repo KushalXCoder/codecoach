@@ -14,15 +14,15 @@ const client = new Mistral({ apiKey: apiKey });
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
     try {
-        let { codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } = await req.json();
-        if(!codeforcesId || !rating || !dailyLimit || !improveTopics || !experiencedTopics || !leveledQuestions) {
+        let { username, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions } = await req.json();
+        if(!username || !rating || !dailyLimit || !improveTopics || !experiencedTopics || !leveledQuestions) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
 
         // Connect to Redis and check for cached response
         await connectRedis();
 
-        const redisKey = `user-${codeforcesId}`;
+        const redisKey = `user-${username}`;
         const cached = await redisClient.get(redisKey);
 
         if(cached) {
@@ -33,10 +33,12 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         await connectDB();
 
         // Parallel check both the models for the user
+        console.log(username);
+
         const [user, userQuestions] = await Promise.all([
-            User.findOne({ codeforcesId }),
-            Questions.findOne({ codeforcesId }),
-        ]);
+            User.findOne({ username }),
+            Questions.findOne({ username }),    
+        ]); 
 
         if(!user || !userQuestions) {
             return NextResponse.json({ message: "User or Questions not found for storing today's questions" }, { status: 404 });
@@ -107,7 +109,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
 
         // Update today's questions and overall questions
         await Questions.updateOne(
-            { codeforcesId },
+            { username },
             { 
                 $set: { todaysQuestions: parsed.selected, streak: streak },
                 $push: { questions: { $each: parsed.selected }},
@@ -123,10 +125,10 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
             // Update the token
             const payload = {
                 data: {
-                    email: user.email,
                     setupCompleted: true,
                     profileData: {
-                        codeforcesId: user.codeforcesId,
+                        // codeforcesId: user.codeforcesId,
+                        username: user.username,
                         rating: rating,
                         dailyLimit: dailyLimit,
                         experiencedTopics: user.experiencedTopics,
@@ -135,7 +137,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
                 }
             }
 
-            const newToken = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '7d' });
+            const newToken = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '30d' });
 
             const cookieStore = await cookies();
             cookieStore.set('token', newToken, {

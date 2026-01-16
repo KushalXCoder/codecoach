@@ -6,8 +6,6 @@ import VerifyDialog from './verify-dailog';
 import { Input } from '../ui/input';
 import { profileStore } from '@/store/profile.store';
 import { Button } from '../ui/button';
-import { toast } from 'sonner';
-import { checkVerified } from '@/lib/helper/checkVerified';
 
 const CodeforcesInput = () => {
   const router = useRouter();  
@@ -28,14 +26,7 @@ const CodeforcesInput = () => {
         return;
     }
 
-    const isVerified = await checkVerified();
-
-    if(!isVerified) {
-      setCodeforcesId(codeforcesId.trim());
-      setOpenDialog(true);
-    } else {
-      toast("Codeforces ID connected successfully");
-    }
+    setOpenDialog(true);
   }
 
   return (
@@ -48,7 +39,7 @@ const CodeforcesInput = () => {
               name='cf_id'
               value={codeforcesId}
               onChange={handleChange}
-              className='text-white'
+              className='text-black'
               placeholder='Enter your codeforces id'
           />
           <Button

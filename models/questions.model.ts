@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const QuestionsSchema = new mongoose.Schema({
     codeforcesId: {
         type: String,
-        required: true,
+    },
+    username: {
+        type: String,
     },
     todaysQuestions: {
         type: [Object],

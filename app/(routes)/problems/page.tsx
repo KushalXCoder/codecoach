@@ -16,11 +16,10 @@ import { QuestionsData } from '@/lib/types/global.types';
 import PastQuestions from '@/components/problems/past-questions';
 import SyncButton from '@/components/problems/sync-button';
 import { problemsStore } from '@/store/problems.store';
-import ColorCode from '@/components/problems/color-code';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
-  const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
+  const { hydrated: profileHydrated, username, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
   const { hydrated: problemsHydrated, todaysQuestions, setTodaysQuestions } = problemsStore();
 
   const [tabValue, setTabValue] = useState<string>('today');
@@ -36,8 +35,8 @@ const DashboardPage = () => {
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestionsLength > 0;
   
   const { data: selectedQuestions, isError: selectedQuestionsError } = useQuery({
-    queryKey: ['questions', codeforcesId],
-    queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
+    queryKey: ['questions', username],
+    queryFn: () => getFinalSelectedProblems({ username, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
   });
   
@@ -67,7 +66,6 @@ const DashboardPage = () => {
       {/* <DailyQuote quote={quote!} /> */}
       {profileCompleted ? (
         <div className='flex flex-col flex-1'>
-          <ColorCode />
           <Tabs defaultValue='today' onValueChange={(value) => setTabValue(value)} className='font-sans'>
             <div className='flex justify-between items-center'>
               <TabsList className='bg-white/80 *:px-3'>
@@ -84,7 +82,7 @@ const DashboardPage = () => {
                   Past
                 </TabsTrigger>
               </TabsList>
-              <SyncButton codeforcesId={codeforcesId} tabValue={tabValue} />
+              <SyncButton tabValue={tabValue} />
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>
