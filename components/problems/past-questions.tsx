@@ -7,12 +7,12 @@ import ProblemBox from "./problem-box";
 import { QuestionsData } from "@/lib/types/global.types";
 
 const PastQuestions = () => {
-    const { hydrated, codeforcesId } = profileStore();
+    const { hydrated, username } = profileStore();
 
     const { data: pastQuestions, isLoading: pastQuestionsLoading, isError: pastQuestionsError } = useQuery({
         queryKey: ['past-questions'],
-        queryFn: () => userPrevQuestions(codeforcesId),
-        enabled: hydrated && !!codeforcesId,
+        queryFn: () => userPrevQuestions(username),
+        enabled: hydrated && !!username,
     });
 
     if(!hydrated || pastQuestionsLoading) {

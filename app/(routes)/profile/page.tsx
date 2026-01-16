@@ -37,7 +37,7 @@ type DifficultyData = RatingData & {
 const CHART_CARD_HEIGHT = "h-[360px]";
 
 const ProfilePage = () => {
-  const { hydrated, codeforcesId } = profileStore();
+  const { hydrated, username } = profileStore();
 
   const [ratingData, setRatingData] = useState<RatingData[]>([
     { type: "easy", value: 0 },
@@ -50,8 +50,8 @@ const ProfilePage = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["profile-data"],
-    queryFn: () => getProfileData(codeforcesId),
-    enabled: !!codeforcesId,
+    queryFn: () => getProfileData(username),
+    enabled: !!username,
   });
 
   useEffect(() => {
@@ -92,12 +92,12 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen max-w-3xl mx-auto font-sans py-7">
-      <Link href="/problems" className="flex items-center gap-1 text-gray-500 mb-8">
+      <Link href="/problems" className="flex items-center gap-1 text-gray-500 mb-8 w-fit">
         <ArrowLeft className="size-4 hover:underline" />
         Back
       </Link>
 
-      <ProfileHeader codeforcesId={codeforcesId} />
+      <ProfileHeader username={username} />
 
       <div className="flex w-full justify-between items-end">
         <p className="text-gray-500">
@@ -122,8 +122,7 @@ const ProfilePage = () => {
             <CardContent className="p-5">
               <p className="text-gray-400 text-sm">Total Problems</p>
               <h2 className="text-3xl font-semibold text-primary">
-                {(data?.profileData.questions.length ?? 0) +
-                  (data?.profileData.todaysQuestions.length ?? 0)}
+                {data?.profileData.questions.length ?? 0}
               </h2>
             </CardContent>
           </Card>

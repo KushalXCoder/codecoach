@@ -16,7 +16,7 @@ export const useFilterData = () => {
     const { hydrated: problemsHydrated, leveledQuestions, setLeveledQuestions } = problemsStore();
 
     const {
-        codeforcesId,
+        username,
         rating,
         updatedSettings,
         hydrated: profileHydrated,
@@ -69,7 +69,7 @@ export const useFilterData = () => {
             throw new Error("Failed to fetch problems");
         }
 
-        const prevQuestions = await userPrevQuestions(codeforcesId);
+        const prevQuestions = await userPrevQuestions(username);
         if (!prevQuestions.success) {
             throw new Error("Failed to fetch previous questions");
         }
@@ -116,7 +116,7 @@ export const useFilterData = () => {
     const query = useQuery({
         queryKey: [
             "leveledQuestions",
-            codeforcesId,
+            username,
             userRating,
             improveTopics.join(","),
             experiencedTopics.join(","),

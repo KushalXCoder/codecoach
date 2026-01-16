@@ -3,15 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const { codeforcesId, updatedTodaysQuestions } = await req.json();
+        const { username, updatedTodaysQuestions } = await req.json();
 
-        if(!codeforcesId || !updatedTodaysQuestions) {
-            return NextResponse.json({ message: "CodeforcesId or updatedTodaysQuestions is missing" }, { status: 400 });
+        if(!username || !updatedTodaysQuestions) {
+            return NextResponse.json({ message: "username or updatedTodaysQuestions is missing" }, { status: 400 });
         }
 
         await connectRedis();
 
-        const key = `user-${codeforcesId}`;
+        const key = `user-${username}`;
 
         const ttl = await redisClient.ttl(key); // seconds
         

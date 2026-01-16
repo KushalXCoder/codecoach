@@ -20,7 +20,7 @@ import ColorCode from '@/components/problems/color-code';
 
 const DashboardPage = () => {
   const { hydrated, profileCompleted } = userStore();
-  const { hydrated: profileHydrated, codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
+  const { hydrated: profileHydrated, username, rating, dailyLimit, improveTopics, experiencedTopics } = profileStore();
   const { hydrated: problemsHydrated, todaysQuestions, setTodaysQuestions } = problemsStore();
 
   const [tabValue, setTabValue] = useState<string>('today');
@@ -36,8 +36,8 @@ const DashboardPage = () => {
   const enableAiQuestions = profileHydrated && !questionsLoading && leveledQuestionsLength > 0;
   
   const { data: selectedQuestions, isError: selectedQuestionsError } = useQuery({
-    queryKey: ['questions', codeforcesId],
-    queryFn: () => getFinalSelectedProblems({ codeforcesId, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
+    queryKey: ['questions', username],
+    queryFn: () => getFinalSelectedProblems({ username, rating, dailyLimit, improveTopics, experiencedTopics, leveledQuestions }),
     enabled: !!enableAiQuestions,
   });
   
@@ -84,7 +84,7 @@ const DashboardPage = () => {
                   Past
                 </TabsTrigger>
               </TabsList>
-              <SyncButton codeforcesId={codeforcesId} tabValue={tabValue} />
+              {/* <SyncButton codeforcesId={codeforcesId} tabValue={tabValue} /> */}
             </div>
             <TabsContent value='today'>
               <div className='flex flex-col gap-3 my-5'>

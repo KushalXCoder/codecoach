@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (req: NextRequest) => {
     try {
-        const {codeforcesId, updatedChanges } = await req.json();
-        if(!codeforcesId || !updatedChanges) {
+        const {username, updatedChanges } = await req.json();
+        if(!username || !updatedChanges) {
             return NextResponse.json({ message: "No changes provided" }, { status: 400 });
         }
 
         const user = await User.findOneAndUpdate(
-            { codeforcesId },
+            { username },
             { $set: { updatedSettings: updatedChanges } },
             { new: true }
         );

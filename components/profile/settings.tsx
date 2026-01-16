@@ -12,7 +12,7 @@ import { ProfileDataResponse } from "@/services/profile.service";
 // leveledQuestions, the next day or when the 24hr time ends in the cache for the user.
 
 const Settings = () => {
-    const { codeforcesId, rating, dailyLimit, updatedSettings, setUpdatedSettings, setRating, setDailyLimit } = profileStore();
+    const { username, rating, dailyLimit, updatedSettings, setUpdatedSettings, setRating, setDailyLimit } = profileStore();
 
     const [newRating, setNewRating] = useState<number>(rating ?? 0);
     const [newDailyLimit, setNewDailyLimit] = useState<number>(dailyLimit ?? 0);
@@ -30,7 +30,7 @@ const Settings = () => {
 
         setUpdatedSettings(changes);
 
-        const saveRes = await saveUserChanges(codeforcesId, changes);
+        const saveRes = await saveUserChanges(username, changes);
 
         if(!saveRes.success) {
             toast.error(saveRes.message || "Failed to save changes");

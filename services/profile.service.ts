@@ -2,7 +2,7 @@ import { ProfileData, QuestionsData, RatingType } from "@/lib/types/global.types
 
 
 export type ProfileDataType = {
-    codeforcesId: string,
+    username: string,
     solvedQuestions: RatingType[],
     questions: QuestionsData[],
     todaysQuestions: QuestionsData[],
@@ -14,10 +14,10 @@ export type ProfileDataResponse = {
     profileData: ProfileDataType,
 };
 
-export const getProfileData = async (codeforcesId: string) : Promise<ProfileDataResponse> => {
+export const getProfileData = async (username: string) : Promise<ProfileDataResponse> => {
     const res = await fetch('/api/profile', {
         method: 'POST',
-        body: JSON.stringify(codeforcesId),
+        body: JSON.stringify(username),
     });
 
     const data = await res.json();

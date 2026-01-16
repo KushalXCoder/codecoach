@@ -1,13 +1,16 @@
 import mongoose, { set } from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    email: {
+    // email: {
+    //     type: String,
+    //     required: true,
+    // },
+    // password: {
+    //     type: String,
+    //     required: true,
+    // },
+    username: {
         type: String,
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
     },
     setupCompleted: {
         type: Boolean,

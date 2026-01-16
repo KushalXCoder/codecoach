@@ -3,7 +3,8 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ProfileStore = {
-    codeforcesId: string;
+    // codeforcesId: string;
+    username: string;
     dailyLimit: number | null;
     rating: number | null;
     experiencedTopics: string[];
@@ -11,7 +12,8 @@ export type ProfileStore = {
     hydrated: boolean;
     updatedSettings: Partial<ProfileData>;
 
-    setCodeforcesId: (id: string) => void;
+    // setCodeforcesId: (id: string) => void;
+    setUsername: (name: string) => void;
     setDailyLimit: (val: number) => void;
     setRating: (val: number) => void;
     setExperiencedTopics: (topics: string[]) => void;
@@ -25,7 +27,8 @@ export type ProfileStore = {
 }
 
 const initialState = {
-    codeforcesId: "",
+    // codeforcesId: "",
+    username: "",
     dailyLimit: null,
     rating: null,
     experiencedTopics: [],
@@ -38,7 +41,8 @@ export const profileStore = create<ProfileStore>()(
     persist((set,get) => ({
         ...initialState,
 
-        setCodeforcesId: (id) => set({ codeforcesId: id }),
+        // setCodeforcesId: (id) => set({ codeforcesId: id }),
+        setUsername: (name) => set({ username: name }),
         setDailyLimit: (val) => set({ dailyLimit: val }),
         setRating: (val) => set({ rating: val }),
         setExperiencedTopics: (topics) => set({ experiencedTopics: topics }),
@@ -80,7 +84,8 @@ export const profileStore = create<ProfileStore>()(
             state?.setHydrated(true);
         },
         partialize: (state) => ({
-            codeforcesId: state.codeforcesId,
+            // codeforcesId: state.codeforcesId,
+            username: state.username,
             dailyLimit: state.dailyLimit,
             rating: state.rating,
             experiencedTopics: state.experiencedTopics,

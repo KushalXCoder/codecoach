@@ -3,14 +3,18 @@
 import SelectTopics from "@/components/analyze/select-topics";
 import { Input } from "@/components/ui/input";
 import { profileStore } from "@/store/profile.store";
-import CodeforcesInput from "./codeforces-input";
+// import CodeforcesInput from "./codeforces-input";
 
 const Analyze = () => {
-    const { rating, setRating } = profileStore();
+    const { username, rating, setUsername, setRating } = profileStore();
     return (
         <div>
             <div className="flex flex-col gap-5 mt-3">
-                <CodeforcesInput />
+                {/* <CodeforcesInput /> */}
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="username" className="text-white">Username</label>
+                    <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="John Doe" className="text-primary" />
+                </div>
                 <div className="flex flex-col gap-2 ">
                     <label className="text-white">Codeforces Rating</label>
                     <Input

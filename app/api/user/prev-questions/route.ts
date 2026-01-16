@@ -5,22 +5,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const { codeforcesId } = await req.json();
-        if(!codeforcesId) {
+        const { username } = await req.json();
+        if(!username) {
             return NextResponse.json({ success: false, message: "Codeforces ID is required" }, { status: 400 });
         }
 
         await connectDB();
 
-        const user = await Questions.findOne({ codeforcesId });
+        const user = await Questions.findOne({ username });
         if(!user) {
-            const user = await User.findOne({ codeforcesId });
+            const user = await User.findOne({ username });
             if(!user) {
                 return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
             }
 
             await Questions.create({
-                codeforcesId,
+                username,
                 questions: [],
                 todaysQuestions: [],
                 solvedQuestions: [],
