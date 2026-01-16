@@ -3,7 +3,6 @@
 // import { fetchMe } from "@/lib/provider/auth-provider";
 import { fetchProfileToken } from "@/services/user.service";
 import { profileStore } from "@/store/profile.store";
-import userStore from "@/store/user.store";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -28,22 +27,8 @@ const AuthCallbackPage = () => {
     useEffect(() => {
         if(!data?.decoded || data.decoded === null) return;
 
-        console.log(data);
         const user = data.decoded.data;
-
-        // console.log("User setup completed:", user.setupCompleted);
-        
-        // Update the global state with user profile information
-        // setProfileCompleted(user.setupCompleted);
-
-        console.log(user);
         hydrateFromServer(user);
-
-        // if(user.setupCompleted) {
-        //     router.push('/problems');
-        // } else {
-        //     router.push('/profile-setup');
-        // }
 
         router.push('/problems');
     },[data]);

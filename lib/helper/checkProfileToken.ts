@@ -1,5 +1,5 @@
 import jwt, { JwtPayload as JwtLibPayload } from "jsonwebtoken";
-import { JWTPayload, JWTProfilePayload } from "../types/global.types";
+import { JWTProfilePayload } from "../types/global.types";
 
 const checkProfileToken = async (token: string) : Promise<JWTProfilePayload | null> => {
     try {

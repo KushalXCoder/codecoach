@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import checkToken from "./lib/helper/checkToken";
 import checkProfileToken from "./lib/helper/checkProfileToken";
 
 export const proxy = async (req: NextRequest) => {
