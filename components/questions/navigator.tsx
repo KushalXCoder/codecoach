@@ -27,6 +27,7 @@ const Navigator = ({ className } : NavigatorProps) => {
 
     const handleClick = async () => {
         const result = validateStep(idx);
+        const verified = await checkVerified();
 
         if(!result.valid) {
             toast(result.message || "Please fill the required fields");
