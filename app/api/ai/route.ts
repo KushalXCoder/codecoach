@@ -33,14 +33,24 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         await connectDB();
 
         // Parallel check both the models for the user
-        console.log(username);
-
-        const [user, userQuestions] = await Promise.all([
+        let [user, userQuestions] = await Promise.all([
             User.findOne({ username }),
-            Questions.findOne({ username }),    
-        ]); 
+            Questions.findOneAndUpdate(
+                { username },
+                {
+                    $setOnInsert: {
+                        username,
+                        questions: [],
+                        todaysQuestions: [],
+                        solvedQuestions: [],
+                        streak: 0,
+                    },
+                },
+                { new: true, upsert: true },
+            ),
+        ]);
 
-        if(!user || !userQuestions) {
+        if(!user) {
             return NextResponse.json({ message: "User or Questions not found for storing today's questions" }, { status: 404 });
         }
 
