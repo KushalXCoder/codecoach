@@ -18,7 +18,7 @@ type NavigatorProps = {
 
 const Navigator = ({ className } : NavigatorProps) => {
     const { setProfileCompleted } = userStore();
-    const { username, dailyLimit, rating, experiencedTopics, improveTopics, validateStep, hydrateFromServer } = profileStore();
+    const { username, dailyLimit, rating, experiencedTopics, improveTopics, usernameVerified, validateStep, hydrateFromServer } = profileStore();
     const { idx, setIdx } = questionStore();
     const [loading, setLoading] = useState<boolean>(false);
     
@@ -35,6 +35,12 @@ const Navigator = ({ className } : NavigatorProps) => {
         }
         
         if(idx === 1) {
+            // Check if username is verified
+            if(!usernameVerified) {
+                toast("Username already exists. Please choose another one.");
+                return;
+            }
+
             const profileData = { username, dailyLimit, rating, experiencedTopics, improveTopics };
 
             setLoading(true);

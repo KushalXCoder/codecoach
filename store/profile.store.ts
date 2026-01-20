@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ProfileStore = {
     codeforcesId: string;
+    usernameVerified: boolean;
     username: string;
     dailyLimit: number | null;
     rating: number | null;
@@ -13,6 +14,7 @@ export type ProfileStore = {
     updatedSettings: Partial<ProfileData>;
 
     setCodeforcesId: (id: string) => void;
+    setUsernameVerified: (val: boolean) => void;
     setUsername: (name: string) => void;
     setDailyLimit: (val: number) => void;
     setRating: (val: number) => void;
@@ -28,6 +30,7 @@ export type ProfileStore = {
 
 const initialState = {
     codeforcesId: "",
+    usernameVerified: false,
     username: "",
     dailyLimit: null,
     rating: null,
@@ -42,6 +45,7 @@ export const profileStore = create<ProfileStore>()(
         ...initialState,
 
         setCodeforcesId: (id) => set({ codeforcesId: id }),
+        setUsernameVerified: (val) => set({ usernameVerified: val }),
         setUsername: (name) => set({ username: name }),
         setDailyLimit: (val) => set({ dailyLimit: val }),
         setRating: (val) => set({ rating: val }),
