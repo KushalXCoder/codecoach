@@ -10,11 +10,16 @@ const Footer = () => {
                     <div className="flex flex-col">
                         <h1 className="text-lg text-primary">CodeCoach</h1>
                         <p className="max-w-md text-gray-400 text-sm mt-2">An <span className="text-blue-500">open source</span> platform for improving your coding skills. Why solve random, irrelevant problems when you can focus on what matters?</p>
-                        <Link href="https://github.com/KushalXCoder/codecoach" target="_blank">
-                            <Button className="bg-gray-500 text-white w-fit mt-2 group cursor-pointer">
-                                <Star className="group-hover:fill-white" /> Give us a star
-                            </Button>
-                        </Link>
+                        <div className="flex items-center gap-5 mt-2">
+                            <Link href="https://github.com/KushalXCoder/codecoach" target="_blank">
+                                <Button className="bg-gray-500 text-white w-fit group cursor-pointer">
+                                    <Star className="group-hover:fill-white" /> Give us a star
+                                </Button>
+                            </Link>
+                            <a href="https://www.producthunt.com/products/codecoach-3?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-codecoach-3" target="_blank" rel="noopener noreferrer">
+                                <img alt="CodeCoach - Practice personal curated codeforces questions | Product Hunt" width="180" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1063902&amp;theme=light&amp;t=1768919030689" />
+                            </a>
+                        </div>
                     </div>
                     <div className="flex flex-col">
                         <h1 className="text-lg">Product</h1>
